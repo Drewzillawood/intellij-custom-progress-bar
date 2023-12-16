@@ -1,6 +1,6 @@
 package com.drewzillawood.customprogressbar.listener
 
-import com.drewzillawood.customprogressbar.component.CustomProgressBarUI
+import com.drewzillawood.customprogressbar.CustomProgressBarUIJava
 import com.intellij.ide.ui.LafManager
 import com.intellij.ide.ui.LafManagerListener
 import javax.swing.UIManager
@@ -12,6 +12,7 @@ class CustomProgressBarListener : LafManagerListener {
     }
 
     private fun updateProgressBarUi() {
-        UIManager.put("ProgressBarUI", CustomProgressBarUI::class.java.name)
+        UIManager.put("ProgressBarUI", CustomProgressBarUIJava::class.java.name)
+        UIManager.getDefaults()[CustomProgressBarUIJava::class.java.name] = CustomProgressBarUIJava::class.java
     }
 }
