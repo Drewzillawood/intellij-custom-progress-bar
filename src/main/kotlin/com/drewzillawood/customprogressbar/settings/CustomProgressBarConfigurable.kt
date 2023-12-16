@@ -1,21 +1,34 @@
 package com.drewzillawood.customprogressbar.settings
 
+import com.drewzillawood.customprogressbar.component.CustomProgressBarUI
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.util.EventDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import java.awt.Color
 import java.util.*
 import javax.swing.JCheckBox
 import javax.swing.JComponent
+import javax.swing.JProgressBar
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KFunction1
 
-class CustomProgressBarConfigurable : SearchableConfigurable {
+class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
-    private val myDispatcher = EventDispatcher.create(EventListener::class.java)
+    private val indeterminateExampleProgressBar = JProgressBar()
+    private val determinateExampleProgressBar = JProgressBar()
+    private val job = Job()
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.Main
 
     private lateinit var panel: DialogPanel
     private lateinit var enabledCustomProgressBar : JCheckBox
@@ -23,6 +36,17 @@ class CustomProgressBarConfigurable : SearchableConfigurable {
     private lateinit var mySecondaryColorChooser : ColorPanel
 
     private var settings = CustomProgressBarSettings.instance;
+
+    init {
+        indeterminateExampleProgressBar.setUI(CustomProgressBarUI())
+        indeterminateExampleProgressBar.isIndeterminate = true
+
+        determinateExampleProgressBar.setUI(CustomProgressBarUI())
+        determinateExampleProgressBar.isIndeterminate = false
+        determinateExampleProgressBar.minimum = 0
+        determinateExampleProgressBar.maximum = 100
+        determinateExampleProgressBar.value = 0
+    }
 
     override fun createComponent(): JComponent {
         panel = panel {
@@ -47,8 +71,32 @@ class CustomProgressBarConfigurable : SearchableConfigurable {
                     settings::mySecondaryColor::set
                 )
             }
+            row("Indeterminate") {
+                cell(indeterminateExampleProgressBar)
+            }
+            row("Determinate") {
+                cell(determinateExampleProgressBar)
+            }
         }
+
+        simulateProgress()
+
         return panel;
+    }
+
+    private fun simulateProgress() {
+        val totalTime = 5000L
+        val intervalTime = 100L
+
+        val increment = (determinateExampleProgressBar.maximum * intervalTime / totalTime).toInt()
+
+        launch {
+            while (isActive)
+                for (i in 1..(totalTime / intervalTime)) {
+                    delay(intervalTime)
+                    determinateExampleProgressBar.value = (determinateExampleProgressBar.value + increment) % determinateExampleProgressBar.maximum
+                }
+        }
     }
 
     override fun isModified(): Boolean {
@@ -72,6 +120,11 @@ class CustomProgressBarConfigurable : SearchableConfigurable {
 
     override fun getId(): String {
         return "preferences.custom.progress.bar"
+    }
+
+    override fun disposeUIResources() {
+        super.disposeUIResources()
+        job.cancel()
     }
 }
 
