@@ -68,8 +68,8 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
 
             // Use foreground color as a reference, don't use it directly. This is done for compatibility reason.
             // Colors are hardcoded in UI delegates by design. If more colors are needed contact designers.
-            val startColor: Color = getFinishedColor(c)
-            val endColor: Color = getRemainderColor()
+            val startColor: Color = getIndeterminatePrimaryColor()
+            val endColor: Color = getIndeterminateSecondaryColor()
 
             val pHeight = progressBar.preferredSize.height
             val pWidth = progressBar.preferredSize.width
@@ -156,12 +156,12 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
         g.clip = oldClip
     }
 
-    open fun getRemainderColor(): Color {
-        return settings.mySecondaryColor
+    open fun getIndeterminatePrimaryColor(): Color {
+        return settings.myIndeterminatePrimaryColor
     }
 
-    open fun getFinishedColor(c: JComponent?): Color {
-        return settings.myPrimaryColor
+    open fun getIndeterminateSecondaryColor(): Color {
+        return settings.myIndeterminateSecondaryColor
     }
 
     override fun getPreferredSize(c: JComponent?): Dimension {
@@ -253,7 +253,7 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
                     pWidth.toFloat()
                 )
             }
-            g2.color = getRemainderColor()
+            g2.color = getDeterminateSecondaryColor()
             g2.fill(fullShape)
 
             // Use foreground color as a reference, don't use it directly. This is done for compatibility reason.
@@ -266,7 +266,7 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
             } else if (foreground === ColorProgressBar.YELLOW) {
                 g2.color = WARNING_COLOR
             } else {
-                g2.color = getFinishedColor(c)
+                g2.color = getDeterminatePrimaryColor()
             }
             g2.fill(coloredShape)
 
@@ -277,5 +277,13 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
         } finally {
             g2.dispose()
         }
+    }
+
+    open fun getDeterminatePrimaryColor(): Color {
+        return settings.myDeterminatePrimaryColor
+    }
+
+    open fun getDeterminateSecondaryColor(): Color {
+        return settings.myDeterminateSecondaryColor
     }
 }
