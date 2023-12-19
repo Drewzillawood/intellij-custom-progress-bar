@@ -13,10 +13,16 @@ import java.awt.Color
 class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSettings> {
 
     var isCustomProgressBarEnabled = true
-    var myPrimaryColor: Color = JBColor.GRAY
-    var mySecondaryColor: Color = JBColor.lightGray
-    var myPrimaryDemoColor: Color = JBColor.GRAY
-    var mySecondaryDemoColor: Color = JBColor.lightGray
+
+    var myIndeterminatePrimaryColor: Color = JBColor.GRAY
+    var myIndeterminateSecondaryColor: Color = JBColor.lightGray
+    var myIndeterminatePrimaryDemoColor: Color = JBColor.GRAY
+    var myIndeterminateSecondaryDemoColor: Color = JBColor.lightGray
+
+    var myDeterminatePrimaryColor: Color = JBColor.GRAY
+    var myDeterminateSecondaryColor: Color = JBColor.lightGray
+    var myDeterminatePrimaryDemoColor: Color = JBColor.GRAY
+    var myDeterminateSecondaryDemoColor: Color = JBColor.lightGray
 
     @Nullable
     override fun getState() = this
