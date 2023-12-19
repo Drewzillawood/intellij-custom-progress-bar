@@ -15,6 +15,8 @@ class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSett
     var isCustomProgressBarEnabled = true
     var myPrimaryColor: Color = JBColor.GRAY
     var mySecondaryColor: Color = JBColor.lightGray
+    var myPrimaryDemoColor: Color = JBColor.GRAY
+    var mySecondaryDemoColor: Color = JBColor.lightGray
 
     @Nullable
     override fun getState() = this

@@ -1,6 +1,6 @@
 package com.drewzillawood.customprogressbar.settings
 
-import com.drewzillawood.customprogressbar.component.CustomProgressBarUI
+import com.drewzillawood.customprogressbar.component.CustomProgressBarDemoUI
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
@@ -38,10 +38,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     private var settings = CustomProgressBarSettings.instance;
 
     init {
-        indeterminateExampleProgressBar.setUI(CustomProgressBarUI())
+        indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
         indeterminateExampleProgressBar.isIndeterminate = true
 
-        determinateExampleProgressBar.setUI(CustomProgressBarUI())
+        determinateExampleProgressBar.setUI(CustomProgressBarDemoUI())
         determinateExampleProgressBar.isIndeterminate = false
         determinateExampleProgressBar.minimum = 0
         determinateExampleProgressBar.maximum = 100
@@ -62,6 +62,9 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                     settings::myPrimaryColor,
                     settings::myPrimaryColor::set
                 )
+                myPrimaryColorChooser.addActionListener {
+                    settings.myPrimaryDemoColor = myPrimaryColorChooser.selectedColor!!
+                }
             }
             row("Secondary Color:") {
                 mySecondaryColorChooser = ColorPanel()
@@ -70,6 +73,9 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                     settings::mySecondaryColor,
                     settings::mySecondaryColor::set
                 )
+                mySecondaryColorChooser.addActionListener {
+                    settings.mySecondaryDemoColor = mySecondaryColorChooser.selectedColor!!
+                }
             }
             row("Indeterminate") {
                 cell(indeterminateExampleProgressBar)
@@ -105,12 +111,26 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                 || panel.isModified()
     }
 
+    override fun reset() {
+        val settings = CustomProgressBarSettings.instance
+        settings.myPrimaryDemoColor = settings.myPrimaryColor
+        settings.mySecondaryDemoColor = settings.mySecondaryColor
+        super.reset()
+    }
+
+    override fun cancel() {
+        reset()
+        super.cancel()
+    }
+
     @Throws(ConfigurationException::class)
     override fun apply() {
         val settings = CustomProgressBarSettings.instance
         settings.isCustomProgressBarEnabled = enabledCustomProgressBar.isCursorSet
         settings.myPrimaryColor = myPrimaryColorChooser.selectedColor!!
+        settings.myPrimaryDemoColor = settings.myPrimaryColor
         settings.mySecondaryColor = mySecondaryColorChooser.selectedColor!!
+        settings.mySecondaryDemoColor = settings.mySecondaryColor
         panel.apply()
     }
 

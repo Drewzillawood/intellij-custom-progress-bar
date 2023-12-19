@@ -68,8 +68,8 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
 
             // Use foreground color as a reference, don't use it directly. This is done for compatibility reason.
             // Colors are hardcoded in UI delegates by design. If more colors are needed contact designers.
-            val startColor: Color = settings.myPrimaryColor
-            val endColor: Color = settings.mySecondaryColor
+            val startColor: Color = getFinishedColor(c)
+            val endColor: Color = getRemainderColor()
 
             val pHeight = progressBar.preferredSize.height
             val pWidth = progressBar.preferredSize.width
@@ -156,11 +156,11 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
         g.clip = oldClip
     }
 
-    protected fun getRemainderColor(): Color {
+    open fun getRemainderColor(): Color {
         return settings.mySecondaryColor
     }
 
-    protected fun getFinishedColor(c: JComponent?): Color {
+    open fun getFinishedColor(c: JComponent?): Color {
         return settings.myPrimaryColor
     }
 
