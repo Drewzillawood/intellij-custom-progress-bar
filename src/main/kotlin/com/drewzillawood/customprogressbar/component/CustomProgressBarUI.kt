@@ -1,9 +1,7 @@
 package com.drewzillawood.customprogressbar.component
 
 import com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings
-import com.intellij.openapi.progress.util.ColorProgressBar
-import com.intellij.ui.Gray
-import com.intellij.ui.JBColor
+import com.intellij.ide.ui.laf.darcula.ui.DarculaProgressBarUI
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.ui.JBInsets
 import com.intellij.util.ui.UIUtil
@@ -22,29 +20,8 @@ import java.awt.geom.RoundRectangle2D
 import javax.swing.JComponent
 import javax.swing.JProgressBar
 import javax.swing.SwingConstants
-import javax.swing.plaf.basic.BasicProgressBarUI
 
-open class CustomProgressBarUI : BasicProgressBarUI() {
-
-    private val TRACK_COLOR: Color = JBColor.namedColor("ProgressBar.trackColor", JBColor(Gray.xC4, Gray.x55))
-    private val PROGRESS_COLOR: Color = JBColor.namedColor("ProgressBar.progressColor", JBColor(Gray.x80, Gray.xA0))
-    private val INDETERMINATE_START_COLOR: Color = JBColor.namedColor("ProgressBar.indeterminateStartColor", JBColor(Gray.xC4, Gray.x69))
-    private val INDETERMINATE_END_COLOR: Color = JBColor.namedColor("ProgressBar.indeterminateEndColor", JBColor(Gray.x80, Gray.x83))
-
-    private val FAILED_COLOR: Color = JBColor.namedColor("ProgressBar.failedColor", JBColor(0xd64f4f, 0xe74848))
-    private val FAILED_END_COLOR: Color = JBColor.namedColor("ProgressBar.failedEndColor", JBColor(0xfb8f89, 0xf4a2a0))
-    private val PASSED_COLOR: Color = JBColor.namedColor("ProgressBar.passedColor", JBColor(0x34b171, 0x008f50))
-    private val PASSED_END_COLOR: Color = JBColor.namedColor("ProgressBar.passedEndColor", JBColor(0x7ee8a5, 0x5dc48f))
-    private val WARNING_COLOR: Color = JBColor.namedColor("ProgressBar.warningColor", JBColor(0xF0A732, 0xD9A343))
-    private val WARNING_END_COLOR: Color = JBColor.namedColor("ProgressBar.warningEndColor", JBColor(0xEAD2A1, 0xEAD2A1))
-
-    private val CYCLE_TIME_DEFAULT = 800
-    private val REPAINT_INTERVAL_DEFAULT = 50
-
-    private val CYCLE_TIME_SIMPLIFIED = 1000
-    private val REPAINT_INTERVAL_SIMPLIFIED = 500
-    private val ourCycleTime = CYCLE_TIME_DEFAULT
-    private val ourRepaintInterval = REPAINT_INTERVAL_DEFAULT
+open class CustomProgressBarUI : DarculaProgressBarUI() {
 
     private val DEFAULT_WIDTH = 4
 
@@ -66,8 +43,6 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
             JBInsets.removeFrom(r, i)
             val orientation = progressBar.orientation
 
-            // Use foreground color as a reference, don't use it directly. This is done for compatibility reason.
-            // Colors are hardcoded in UI delegates by design. If more colors are needed contact designers.
             val startColor: Color = getIndeterminatePrimaryColor()
             val endColor: Color = getIndeterminateSecondaryColor()
 
@@ -89,8 +64,13 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
                 )
                 yOffset = r.y + pHeight / 2
                 g2.paint = GradientPaint(
-                    (r.x + animationIndex * step * 2).toFloat(), yOffset.toFloat(), startColor,
-                    (r.x + frameCount * step + animationIndex * step * 2).toFloat(), yOffset.toFloat(), endColor, true
+                    (r.x + animationIndex * step * 2).toFloat(),
+                    yOffset.toFloat(),
+                    startColor,
+                    (r.x + frameCount * step + animationIndex * step * 2).toFloat(),
+                    yOffset.toFloat(),
+                    endColor,
+                    true
                 )
             } else {
                 shape = getShapedRect(
@@ -119,14 +99,6 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
         } finally {
             g2.dispose()
         }
-    }
-
-    protected fun getStartColor(c: JComponent?): Color {
-        return INDETERMINATE_START_COLOR
-    }
-
-    protected fun getEndColor(c: JComponent?): Color {
-        return INDETERMINATE_END_COLOR
     }
 
     private fun paintString(g: Graphics2D, x: Int, y: Int, w: Int, h: Int, fillStart: Int, amountFull: Int) {
@@ -259,15 +231,7 @@ open class CustomProgressBarUI : BasicProgressBarUI() {
             // Use foreground color as a reference, don't use it directly. This is done for compatibility reason.
             // Colors are hardcoded in UI delegates by design. If more colors are needed contact designers.
             val foreground = progressBar.foreground
-            if (foreground === ColorProgressBar.RED) {
-                g2.color = FAILED_COLOR
-            } else if (foreground === ColorProgressBar.GREEN) {
-                g2.color = PASSED_COLOR
-            } else if (foreground === ColorProgressBar.YELLOW) {
-                g2.color = WARNING_COLOR
-            } else {
-                g2.color = getDeterminatePrimaryColor()
-            }
+            g2.color = getDeterminatePrimaryColor()
             g2.fill(coloredShape)
 
             // Paint text
