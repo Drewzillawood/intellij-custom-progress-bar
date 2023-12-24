@@ -164,6 +164,11 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
         settings.myIndeterminateSecondaryDemoColor = settings.myIndeterminateSecondaryColor
         settings.myDeterminatePrimaryDemoColor = settings.myDeterminatePrimaryColor
         settings.myDeterminateSecondaryDemoColor = settings.myDeterminateSecondaryColor
+
+        myIndeterminatePrimaryColorChooser.selectedColor = settings.myIndeterminatePrimaryColor
+        myIndeterminateSecondaryColorChooser.selectedColor = settings.myIndeterminateSecondaryColor
+        myDeterminatePrimaryColorChooser.selectedColor = settings.myDeterminatePrimaryColor
+        myDeterminateSecondaryColorChooser.selectedColor = settings.myDeterminateSecondaryColor
         super.reset()
     }
 
