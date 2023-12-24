@@ -9,7 +9,6 @@ import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.selected
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -19,17 +18,14 @@ import java.util.*
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 import javax.swing.JProgressBar
-import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KFunction1
 
 class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     private val indeterminateExampleProgressBar = JProgressBar()
     private val determinateExampleProgressBar = JProgressBar()
-    private val job = Job()
 
-    override val coroutineContext: CoroutineContext
-        get() = job + Dispatchers.Main
+    override val coroutineContext = CoroutineScope(Job()).coroutineContext
 
     private lateinit var panel: DialogPanel
     private lateinit var enabledCustomProgressBar : JCheckBox
@@ -199,11 +195,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     override fun getId(): String {
         return "preferences.custom.progress.bar"
-    }
-
-    override fun disposeUIResources() {
-        super.disposeUIResources()
-        job.cancel()
     }
 }
 
