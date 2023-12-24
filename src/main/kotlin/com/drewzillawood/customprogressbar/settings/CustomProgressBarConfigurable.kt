@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.layout.selected
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -93,7 +94,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         }
                     }
                 )
-            }
+            }.visibleIf(enabledCustomProgressBar.selected)
             group("Determinate") {
                 twoColumnsRow(
                     {
@@ -130,7 +131,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         }
                     }
                 )
-            }
+            }.visibleIf(enabledCustomProgressBar.selected)
         }
 
         simulateProgress()

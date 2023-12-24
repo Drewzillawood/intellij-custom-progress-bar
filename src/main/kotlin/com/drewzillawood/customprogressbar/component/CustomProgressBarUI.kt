@@ -28,6 +28,11 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     private val settings = CustomProgressBarSettings.instance
 
     override fun paintIndeterminate(g: Graphics?, c: JComponent?) {
+        if (!settings.isCustomProgressBarEnabled) {
+            super.paintIndeterminate(g, c)
+            return
+        }
+
         val g2 = g?.create() as Graphics2D
         try {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
@@ -170,6 +175,10 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     override fun paintDeterminate(g: Graphics?, c: JComponent?) {
+        if(!settings.isCustomProgressBarEnabled) {
+            super.paintDeterminate(g, c)
+            return
+        }
         val g2 = g?.create() as Graphics2D
         try {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
