@@ -1,15 +1,15 @@
 <svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M 50 20 H 350 A 30 30 0 0 1 350 80 H 50 A 30 30 0 0 1 50 20" stroke="black"
+    <path d="M 50 30 H 350 A 20 20 0 0 1 350 70 H 50 A 20 20 1 0 1 50 30" stroke="black"
           fill="url(#paint0_linear)"/>
-    <path d="M 50 80 H 350 A 30 30 0 0 1 350 140 H 50 A 30 30 0 0 1 50 80" stroke="black"
+    <path d="M 50 90 H 350 A 20 20 0 0 1 350 130 H 50 A 20 20 0 0 1 50 90" stroke="black"
           fill="url(#paint0_linear)"/>
-    <path d="M 50 140 H 350 A 30 30 0 0 1 350 200 H 50 A 30 30 0 0 1 50 140" stroke="black"
+    <path d="M 50 150 H 350 A 20 20 0 0 1 350 190 H 50 A 20 20 0 0 1 50 150" stroke="black"
           fill="url(#paint0_linear)"/>
-    <path d="M 50 200 H 350 A 30 30 0 0 1 350 260 H 50 A 30 30 0 0 1 50 200" stroke="black"
+    <path d="M 50 210 H 350 A 20 20 0 0 1 350 250 H 50 A 20 20 0 0 1 50 210" stroke="black"
           fill="url(#paint0_linear)"/>
-    <path d="M 50 260 H 350 A 30 30 0 0 1 350 320 H 50 A 30 30 0 0 1 50 260" stroke="black"
+    <path d="M 50 270 H 350 A 20 20 0 0 1 350 310 H 50 A 20 20 0 0 1 50 270" stroke="black"
           fill="url(#paint0_linear)"/>
-    <path d="M 50 320 H 350 A 30 30 0 0 1 350 380 H 50 A 30 30 0 0 1 50 320" stroke="black"
+    <path d="M 50 330 H 350 A 20 20 0 0 1 350 370 H 50 A 20 20 0 0 1 50 330" stroke="black"
           fill="url(#paint0_linear)"/>
     <defs>
         <linearGradient id="paint0_linear" x1="20" y1="20" x2="380" y2="380"
@@ -17,7 +17,7 @@
             <stop offset="0.14" stop-color="#ea1a18"/>
             <stop offset="0.28" stop-color="#ff6f00"/>
             <stop offset="0.42" stop-color="#fcff00"/>
-            <stop offset="0.54" stop-color="#00ff20"/>
+            <stop offset="0.54" stop-color="#00e020"/>
             <stop offset="0.68" stop-color="#0021ff"/>
             <stop offset="0.80" stop-color="#c400ff"/>
         </linearGradient>
