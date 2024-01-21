@@ -1,14 +1,26 @@
 package com.drewzillawood.customprogressbar.settings
 
-import com.intellij.ui.JBColor
+import com.intellij.util.xmlb.annotations.Property
 import java.awt.Color
 
-data class CustomProgressBarColorSettings(
-    var RGB: Int = JBColor.GRAY.rgb
-) {
-    var color: Color
-        get() = Color(RGB)
-        set(value) {
-            RGB = value.rgb
-        }
+class CustomProgressBarColorSettings {
+
+    @Property
+    var colorRGB: Int
+
+    constructor(_color: Color) {
+        this.colorRGB = _color.rgb
+    }
+
+    constructor(rgb: Int) {
+        this.colorRGB = rgb
+    }
+
+    constructor() {
+        this.colorRGB = Color.BLACK.rgb
+    }
+
+    fun getColor(): Color {
+        return Color(colorRGB)
+    }
 }
