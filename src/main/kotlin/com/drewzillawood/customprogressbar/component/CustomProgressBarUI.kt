@@ -25,7 +25,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
 
     private val DEFAULT_WIDTH = 4
 
-    private val settings = CustomProgressBarSettings.instance
+    private val settings = CustomProgressBarSettings.getInstance()
 
     override fun paintIndeterminate(g: Graphics?, c: JComponent?) {
         if (!settings.isCustomProgressBarEnabled) {
@@ -134,11 +134,11 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     open fun getIndeterminatePrimaryColor(): Color {
-        return settings.myIndeterminatePrimaryColor
+        return settings.myIndeterminatePrimaryColor.color
     }
 
     open fun getIndeterminateSecondaryColor(): Color {
-        return settings.myIndeterminateSecondaryColor
+        return settings.myIndeterminateSecondaryColor.color
     }
 
     override fun getPreferredSize(c: JComponent?): Dimension {
@@ -253,10 +253,10 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     open fun getDeterminatePrimaryColor(): Color {
-        return settings.myDeterminatePrimaryColor
+        return settings.myDeterminatePrimaryColor.color
     }
 
     open fun getDeterminateSecondaryColor(): Color {
-        return settings.myDeterminateSecondaryColor
+        return settings.myDeterminateSecondaryColor.color
     }
 }

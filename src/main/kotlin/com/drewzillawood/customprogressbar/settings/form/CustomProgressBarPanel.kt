@@ -24,7 +24,7 @@ class CustomProgressBarPanel {
     private val eventDispatcher: EventDispatcher<ColorAndFontSettingsListener> =
         EventDispatcher.create(ColorAndFontSettingsListener::class.java)
 
-    private val settings: CustomProgressBarSettings = CustomProgressBarSettings.instance
+    private val settings: CustomProgressBarSettings = CustomProgressBarSettings.getInstance()
 
     fun component(): JComponent = panel
 

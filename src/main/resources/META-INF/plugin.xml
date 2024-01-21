@@ -26,7 +26,8 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable instance="com.drewzillawood.customprogressbar.settings.CustomProgressBarConfigurable"/>
+        <applicationConfigurable instance="com.drewzillawood.customprogressbar.settings.CustomProgressBarConfigurable"
+                                 displayName="Custom Progress Bar"/>
         <applicationService serviceImplementation="com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings"/>
     </extensions>
 

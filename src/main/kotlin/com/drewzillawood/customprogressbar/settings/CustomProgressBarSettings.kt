@@ -1,28 +1,29 @@
 package com.drewzillawood.customprogressbar.settings
 
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.service
 import com.intellij.ui.JBColor
 import com.intellij.util.xmlb.XmlSerializerUtil
 import org.jetbrains.annotations.Nullable
-import java.awt.Color
 
+@Service
 @State(name = "CustomProgressBarSettings", storages = [(Storage("Custom-ProgressBar-Settings.xml"))])
 class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSettings> {
 
     var isCustomProgressBarEnabled = true
 
-    var myIndeterminatePrimaryColor: Color = JBColor.GRAY
-    var myIndeterminateSecondaryColor: Color = JBColor.lightGray
-    var myIndeterminatePrimaryDemoColor: Color = JBColor.GRAY
-    var myIndeterminateSecondaryDemoColor: Color = JBColor.lightGray
+    var myIndeterminatePrimaryColor = CustomProgressBarColorSettings(JBColor.GRAY.rgb)
+    var myIndeterminateSecondaryColor = CustomProgressBarColorSettings(JBColor.lightGray.rgb)
+    var myIndeterminatePrimaryDemoColor = CustomProgressBarColorSettings(JBColor.GRAY.rgb)
+    var myIndeterminateSecondaryDemoColor = CustomProgressBarColorSettings(JBColor.lightGray.rgb)
 
-    var myDeterminatePrimaryColor: Color = JBColor.GRAY
-    var myDeterminateSecondaryColor: Color = JBColor.lightGray
-    var myDeterminatePrimaryDemoColor: Color = JBColor.GRAY
-    var myDeterminateSecondaryDemoColor: Color = JBColor.lightGray
+    var myDeterminatePrimaryColor = CustomProgressBarColorSettings(JBColor.GRAY.rgb)
+    var myDeterminateSecondaryColor = CustomProgressBarColorSettings(JBColor.lightGray.rgb)
+    var myDeterminatePrimaryDemoColor = CustomProgressBarColorSettings(JBColor.GRAY.rgb)
+    var myDeterminateSecondaryDemoColor = CustomProgressBarColorSettings(JBColor.lightGray.rgb)
 
     @Nullable
     override fun getState() = this
@@ -32,7 +33,7 @@ class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSett
     }
 
     companion object {
-        val instance: CustomProgressBarSettings
-            get() = ApplicationManager.getApplication().getService(CustomProgressBarSettings::class.java)
+        @JvmStatic
+        fun getInstance() = service<CustomProgressBarSettings>()
     }
 }

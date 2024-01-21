@@ -5,21 +5,21 @@ import java.awt.Color
 
 class CustomProgressBarDemoUI : CustomProgressBarUI() {
 
-    private val settings = CustomProgressBarSettings.instance
+    private val settings = CustomProgressBarSettings.getInstance()
 
     override fun getIndeterminateSecondaryColor(): Color {
-        return settings.myIndeterminateSecondaryDemoColor
+        return settings.myIndeterminateSecondaryDemoColor.color
     }
 
     override fun getIndeterminatePrimaryColor(): Color {
-        return settings.myIndeterminatePrimaryDemoColor
+        return settings.myIndeterminatePrimaryDemoColor.color
     }
 
     override fun getDeterminatePrimaryColor(): Color {
-        return settings.myDeterminatePrimaryDemoColor
+        return settings.myDeterminatePrimaryDemoColor.color
     }
 
     override fun getDeterminateSecondaryColor(): Color {
-        return settings.myDeterminateSecondaryDemoColor
+        return settings.myDeterminateSecondaryDemoColor.color
     }
 }
