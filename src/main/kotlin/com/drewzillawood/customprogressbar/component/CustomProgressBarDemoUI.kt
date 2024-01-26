@@ -8,18 +8,18 @@ class CustomProgressBarDemoUI : CustomProgressBarUI() {
     private val settings = CustomProgressBarSettings.getInstance()
 
     override fun getIndeterminateSecondaryColor(): Color {
-        return settings.myIndeterminateSecondaryDemoColor.getColor()
+        return Color(settings.myIndeterminateSecondaryDemoColor)
     }
 
     override fun getIndeterminatePrimaryColor(): Color {
-        return settings.myIndeterminatePrimaryDemoColor.getColor()
+        return Color(settings.myIndeterminatePrimaryDemoColor)
     }
 
     override fun getDeterminatePrimaryColor(): Color {
-        return settings.myDeterminatePrimaryDemoColor.getColor()
+        return Color(settings.myDeterminatePrimaryDemoColor)
     }
 
     override fun getDeterminateSecondaryColor(): Color {
-        return settings.myDeterminateSecondaryDemoColor.getColor()
+        return Color(settings.myDeterminateSecondaryDemoColor)
     }
 }

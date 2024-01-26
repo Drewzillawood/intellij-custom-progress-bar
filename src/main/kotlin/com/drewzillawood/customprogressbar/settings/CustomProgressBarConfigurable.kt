@@ -68,22 +68,22 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                                 myIndeterminatePrimaryColorChooser = ColorPanel()
                                 cell(myIndeterminatePrimaryColorChooser)
                                 myIndeterminatePrimaryColorChooser.bindColor(
-                                    getter = { settings.myIndeterminatePrimaryColor.getColor() },
-                                    setter = { settings.myIndeterminatePrimaryColor = (CustomProgressBarColorSettings(it)) }
+                                    getter = { Color(settings.myIndeterminatePrimaryColor) },
+                                    setter = { settings.myIndeterminatePrimaryColor = it.rgb }
                                 )
                                 myIndeterminatePrimaryColorChooser.addActionListener {
-                                    settings.myIndeterminatePrimaryDemoColor = CustomProgressBarColorSettings(myIndeterminatePrimaryColorChooser.selectedColor!!)
+                                    settings.myIndeterminatePrimaryDemoColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
                                 }
                             }
                             row("Secondary:") {
                                 myIndeterminateSecondaryColorChooser = ColorPanel()
                                 cell(myIndeterminateSecondaryColorChooser)
                                 myIndeterminateSecondaryColorChooser.bindColor(
-                                    getter = { settings.myIndeterminateSecondaryColor.getColor() },
-                                    setter = { settings.myIndeterminateSecondaryColor = (CustomProgressBarColorSettings(it)) }
+                                    getter = { Color(settings.myIndeterminateSecondaryColor) },
+                                    setter = { settings.myIndeterminateSecondaryColor = it.rgb }
                                 )
                                 myIndeterminateSecondaryColorChooser.addActionListener {
-                                    settings.myIndeterminateSecondaryDemoColor = CustomProgressBarColorSettings(myIndeterminateSecondaryColorChooser.selectedColor!!)
+                                    settings.myIndeterminateSecondaryDemoColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
                                 }
                             }
                         }
@@ -105,22 +105,22 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                                 myDeterminatePrimaryColorChooser = ColorPanel()
                                 cell(myDeterminatePrimaryColorChooser)
                                 myDeterminatePrimaryColorChooser.bindColor(
-                                    getter = { settings.myDeterminatePrimaryColor.getColor() },
-                                    setter = { settings.myDeterminatePrimaryColor = (CustomProgressBarColorSettings(it)) }
+                                    getter = { Color(settings.myDeterminatePrimaryColor) },
+                                    setter = { settings.myDeterminatePrimaryColor = it.rgb }
                                 )
                                 myDeterminatePrimaryColorChooser.addActionListener {
-                                    settings.myDeterminatePrimaryDemoColor = CustomProgressBarColorSettings(myDeterminatePrimaryColorChooser.selectedColor!!)
+                                    settings.myDeterminatePrimaryDemoColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
                                 }
                             }
                             row("Secondary:") {
                                 myDeterminateSecondaryColorChooser = ColorPanel()
                                 cell(myDeterminateSecondaryColorChooser)
                                 myDeterminateSecondaryColorChooser.bindColor(
-                                    getter = { settings.myDeterminateSecondaryColor.getColor() },
-                                    setter = { settings.myDeterminateSecondaryColor = (CustomProgressBarColorSettings(it)) }
+                                    getter = { Color(settings.myDeterminateSecondaryColor) },
+                                    setter = { settings.myDeterminateSecondaryColor = it.rgb }
                                 )
                                 myDeterminateSecondaryColorChooser.addActionListener {
-                                    settings.myDeterminateSecondaryDemoColor = CustomProgressBarColorSettings(myDeterminateSecondaryColorChooser.selectedColor!!)
+                                    settings.myDeterminateSecondaryDemoColor = myDeterminateSecondaryColorChooser.selectedColor!!.rgb
                                 }
                             }
                         }
@@ -150,10 +150,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     }
 
     override fun isModified(): Boolean {
-        return myIndeterminatePrimaryColorChooser.selectedColor != settings.myIndeterminatePrimaryColor.getColor()
-                || myIndeterminateSecondaryColorChooser.selectedColor != settings.myIndeterminateSecondaryColor.getColor()
-                || myDeterminatePrimaryColorChooser.selectedColor != settings.myDeterminatePrimaryColor.getColor()
-                || myDeterminateSecondaryColorChooser.selectedColor != settings.myDeterminateSecondaryColor.getColor()
+        return myIndeterminatePrimaryColorChooser.selectedColor != Color(settings.myIndeterminatePrimaryColor)
+                || myIndeterminateSecondaryColorChooser.selectedColor != Color(settings.myIndeterminateSecondaryColor)
+                || myDeterminatePrimaryColorChooser.selectedColor != Color(settings.myDeterminatePrimaryColor)
+                || myDeterminateSecondaryColorChooser.selectedColor != Color(settings.myDeterminateSecondaryColor)
                 || panel.isModified()
     }
 
@@ -164,10 +164,11 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
         settings.myDeterminatePrimaryDemoColor = settings.myDeterminatePrimaryColor
         settings.myDeterminateSecondaryDemoColor = settings.myDeterminateSecondaryColor
 
-        myIndeterminatePrimaryColorChooser.selectedColor = settings.myIndeterminatePrimaryColor.getColor()
-        myIndeterminateSecondaryColorChooser.selectedColor = settings.myIndeterminateSecondaryColor.getColor()
-        myDeterminatePrimaryColorChooser.selectedColor = settings.myDeterminatePrimaryColor.getColor()
-        myDeterminateSecondaryColorChooser.selectedColor = settings.myDeterminateSecondaryColor.getColor()
+        enabledCustomProgressBar.isSelected = settings.isCustomProgressBarEnabled
+        myIndeterminatePrimaryColorChooser.selectedColor = Color(settings.myIndeterminatePrimaryColor)
+        myIndeterminateSecondaryColorChooser.selectedColor = Color(settings.myIndeterminateSecondaryColor)
+        myDeterminatePrimaryColorChooser.selectedColor = Color(settings.myDeterminatePrimaryColor)
+        myDeterminateSecondaryColorChooser.selectedColor = Color(settings.myDeterminateSecondaryColor)
         super.reset()
     }
 
@@ -179,16 +180,16 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     @Throws(ConfigurationException::class)
     override fun apply() {
         val settings = CustomProgressBarSettings.getInstance()
-        settings.isCustomProgressBarEnabled = enabledCustomProgressBar.isCursorSet
+        settings.isCustomProgressBarEnabled = enabledCustomProgressBar.isSelected
 
-        settings.myIndeterminatePrimaryColor = CustomProgressBarColorSettings(myIndeterminatePrimaryColorChooser.selectedColor!!)
+        settings.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
         settings.myIndeterminatePrimaryDemoColor = settings.myIndeterminatePrimaryColor
-        settings.myIndeterminateSecondaryColor = CustomProgressBarColorSettings(myIndeterminateSecondaryColorChooser.selectedColor!!)
+        settings.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
         settings.myIndeterminateSecondaryDemoColor = settings.myIndeterminateSecondaryColor
 
-        settings.myDeterminatePrimaryColor = CustomProgressBarColorSettings(myDeterminatePrimaryColorChooser.selectedColor!!)
+        settings.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
         settings.myDeterminatePrimaryDemoColor = settings.myDeterminatePrimaryColor
-        settings.myDeterminateSecondaryColor = CustomProgressBarColorSettings(myDeterminateSecondaryColorChooser.selectedColor!!)
+        settings.myDeterminateSecondaryColor = myDeterminateSecondaryColorChooser.selectedColor!!.rgb
         settings.myDeterminateSecondaryDemoColor = settings.myDeterminateSecondaryColor
         panel.apply()
     }

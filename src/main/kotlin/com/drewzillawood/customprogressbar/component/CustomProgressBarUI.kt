@@ -4,7 +4,6 @@ import com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings
 import com.intellij.ide.ui.laf.darcula.ui.DarculaProgressBarUI
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.ui.JBInsets
-import com.intellij.util.ui.UIUtil
 import com.intellij.util.ui.UIUtilities
 import java.awt.Color
 import java.awt.Dimension
@@ -134,11 +133,11 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     open fun getIndeterminatePrimaryColor(): Color {
-        return settings.myIndeterminatePrimaryColor.getColor()
+        return Color(settings.myIndeterminatePrimaryColor)
     }
 
     open fun getIndeterminateSecondaryColor(): Color {
-        return settings.myIndeterminateSecondaryColor.getColor()
+        return Color(settings.myIndeterminateSecondaryColor)
     }
 
     override fun getPreferredSize(c: JComponent?): Dimension {
@@ -170,7 +169,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     private fun getShapedRect(x: Float, y: Float, w: Float, h: Float, ar: Float): Shape {
-        val flatEnds = UIUtil.isUnderWin10LookAndFeel() || progressBar.getClientProperty("ProgressBar.flatEnds") == true
+        val flatEnds = progressBar.getClientProperty("ProgressBar.flatEnds") == true
         return if (flatEnds) Rectangle2D.Float(x, y, w, h) else RoundRectangle2D.Float(x, y, w, h, ar, ar)
     }
 
@@ -253,10 +252,10 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     open fun getDeterminatePrimaryColor(): Color {
-        return settings.myDeterminatePrimaryColor.getColor()
+        return Color(settings.myDeterminatePrimaryColor)
     }
 
     open fun getDeterminateSecondaryColor(): Color {
-        return settings.myDeterminateSecondaryColor.getColor()
+        return Color(settings.myDeterminateSecondaryColor)
     }
 }

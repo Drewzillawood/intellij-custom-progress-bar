@@ -1,11 +1,11 @@
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.8.21"
-    id("org.jetbrains.intellij") version "1.13.3"
+    id("org.jetbrains.kotlin.jvm") version "1.9.22"
+    id("org.jetbrains.intellij") version "1.17.0"
 }
 
 group = "com.drewzillawood.CustomProgressBar"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -14,10 +14,14 @@ repositories {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2022.2.5")
+    pluginName.set("custom-progress-bars")
+
+    version.set("2022.2")
     type.set("IC") // Target IDE Platform
 
-    plugins.set(listOf(/* Plugin Dependencies */))
+    plugins.set(listOf(
+        "java"
+    ))
 }
 
 tasks {
@@ -32,7 +36,11 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("222")
-        untilBuild.set("232.*")
+        untilBuild.set("233.*")
+    }
+
+    runPluginVerifier {
+        ideVersions.set(listOf("IC-2022.2","IC-2022.3","IC-2023.1","IC-2023.2","IC-2023.3"))
     }
 
     signPlugin {

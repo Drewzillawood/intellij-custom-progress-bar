@@ -19,6 +19,22 @@
         ]]>
     </description>
 
+    <change-notes>
+        <![CDATA[
+            <p>1.0.0<p>
+            <ul>
+                <li>Compatible with 2023.3</li>
+                <li>Added popup notification</li>
+                <li>Moved plugin settings page under "Appearance & Behavior"</li>
+            </ul>
+
+            <p>0.0.1-SNAPSHOT</p>
+            <ul>
+                <li>Initial Release</li>
+            </ul>
+        ]]>
+    </change-notes>
+
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
     <depends>com.intellij.modules.platform</depends>
@@ -26,13 +42,24 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable instance="com.drewzillawood.customprogressbar.settings.CustomProgressBarConfigurable"
+        <applicationConfigurable parentId="appearance"
+                                 instance="com.drewzillawood.customprogressbar.settings.CustomProgressBarConfigurable"
+                                 id="org.intellij.sdk.settings.AppSettingsConfigurable"
+                                 dynamic="true"
                                  displayName="Custom Progress Bar"/>
         <applicationService serviceImplementation="com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings"/>
+        <postStartupActivity implementation="com.drewzillawood.customprogressbar.notification.activities.PluginUpdatedActivity"/>
+        <notificationGroup displayType="STICKY_BALLOON" id="Custom Progress Bar updated"/>
     </extensions>
 
     <applicationListeners>
         <listener class="com.drewzillawood.customprogressbar.listener.CustomProgressBarListener"
                   topic="com.intellij.ide.ui.LafManagerListener"/>
+
+        <listener class="com.drewzillawood.customprogressbar.listener.CustomProgressBarListener"
+                  topic="com.intellij.ide.plugins.DynamicPluginListener"/>
+
+        <listener class="com.drewzillawood.customprogressbar.listener.CustomProgressBarListener"
+                  topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
 </idea-plugin>
