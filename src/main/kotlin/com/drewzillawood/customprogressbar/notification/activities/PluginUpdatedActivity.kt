@@ -42,12 +42,11 @@ class PluginUpdatedActivity : DumbAware {
             .getNotificationGroup(CUSTOM_PROGRESS_BAR_UPDATED)
             .createNotification(
                 "Custom Progress Bar",
-                "Version updated to: $version",
+                "Version: $version",
                 NotificationType.INFORMATION,
             )
-        val url = javaClass.getResource("/META-INF/pluginIcon.svg")
         val originalIcon = IconLoader.getIcon("/META-INF/pluginIcon.svg", javaClass.classLoader)
-        val scaledIcon = LayeredIcon(originalIcon).scale(32.0F / originalIcon.iconWidth)
+        val scaledIcon = LayeredIcon(originalIcon).scale(48.0F / originalIcon.iconWidth)
         notification.icon = scaledIcon
         notification.addAction(object :
             DumbAwareAction("Configure...") {

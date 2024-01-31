@@ -14,7 +14,7 @@ class CustomProgressBarListener : LafManagerListener, DynamicPluginListener, App
 
     private val PROGRESS_BAR_UI = "ProgressBarUI"
     private val CUSTOM_PROGRESS_BAR_UI_NAME = CustomProgressBarUIJava::class.java.name
-    private lateinit var previousProgressBar: Object
+    private lateinit var previousProgressBar: Any
     private lateinit var pluginId: PluginId
 
     override fun lookAndFeelChanged(source: LafManager) {

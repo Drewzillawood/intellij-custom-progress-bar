@@ -6,14 +6,12 @@ import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.ui.JBColor
 import com.intellij.util.xmlb.XmlSerializerUtil
-import com.intellij.util.xmlb.annotations.Property
-import org.apache.logging.log4j.util.Strings
 import org.jetbrains.annotations.Nullable
 
 @State(name = "CustomProgressBarSettings", storages = [(Storage("Custom-ProgressBar-Settings.xml"))])
 class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSettings> {
 
-    @Property var isCustomProgressBarEnabled = true
+    var isCustomProgressBarEnabled = true
 
     var myIndeterminatePrimaryColor: Int = JBColor.GRAY.rgb
     var myIndeterminateSecondaryColor: Int = JBColor.lightGray.rgb
@@ -25,7 +23,7 @@ class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSett
     var myDeterminatePrimaryDemoColor: Int = JBColor.GRAY.rgb
     var myDeterminateSecondaryDemoColor: Int = JBColor.lightGray.rgb
 
-    var version = Strings.EMPTY
+    var version: String = ""
 
     @Nullable
     override fun getState() = this

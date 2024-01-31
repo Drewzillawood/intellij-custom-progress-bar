@@ -238,7 +238,6 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
 
             // Use foreground color as a reference, don't use it directly. This is done for compatibility reason.
             // Colors are hardcoded in UI delegates by design. If more colors are needed contact designers.
-            val foreground = progressBar.foreground
             g2.color = getDeterminatePrimaryColor()
             g2.fill(coloredShape)
 
