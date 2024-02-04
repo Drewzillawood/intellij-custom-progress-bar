@@ -1,11 +1,14 @@
-<p>1.0.0<p>
-<ul>
-    <li>Compatible with 2023.3</li>
-    <li>Added popup notification</li>
-    <li>Moved plugin settings page under "Appearance & Behavior"</li>
-</ul>
+### 1.0.1
+- Updating README.md
+  - Install instructions
+  - GitHub preview image
+  - Changelog link
+- Updated plugin description
 
-<p>0.0.1-SNAPSHOT</p>
-<ul>
-    <li>Initial Release</li>
-</ul>
+### 1.0.0
+- Compatible with 2023.3
+- Added popup notification
+- Moved plugin settings page under "Appearance & Behavior"
+
+### 0.0.1-SNAPSHOT
+- Initial Release
