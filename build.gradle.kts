@@ -16,7 +16,7 @@ repositories {
 intellij {
     pluginName.set("custom-progress-bars")
 
-    version.set("2022.3")
+    version.set("2023.3")
     type.set("IC") // Target IDE Platform
 
     plugins.set(listOf(
@@ -35,12 +35,12 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("223")
+        sinceBuild.set("233")
         untilBuild.set("233.*")
     }
 
     runPluginVerifier {
-        ideVersions.set(listOf("IC-2022.2","IC-2022.3","IC-2023.1","IC-2023.2","IC-2023.3"))
+        ideVersions.set(listOf("IC-2023.3"))
     }
 
     signPlugin {

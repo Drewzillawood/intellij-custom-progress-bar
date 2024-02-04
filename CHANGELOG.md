@@ -1,5 +1,7 @@
 ### 1.0.1
 - Fixing alignment issues in settings page
+- Removed deprecated usage
+  - Updated compatibility range 233 - 233.* 
 - Updating README.md
   - Install instructions
   - GitHub preview image

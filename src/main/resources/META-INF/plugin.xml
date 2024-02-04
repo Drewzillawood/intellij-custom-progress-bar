@@ -21,21 +21,35 @@
 
     <change-notes>
         <![CDATA[
-            ### 1.0.1
-            - Fixing alignment issues in settings page
-            - Updating README.md
-                - Install instructions
-                - GitHub preview image
-                - Changelog link
-            - Updated plugin description
+            <p>1.0.1</p>
+            <ul>
+                <li>Fixing alignment issues in settings page</li>
+                <li>Removed deprecated usage
+                    <ul>
+                        <li>Updated compatibility range 233 - 233.*</li>
+                    </ul>
+                </li>
+                <li>Updating README.md
+                    <ul>
+                        <li>Install instructions</li>
+                        <li>GitHub preview image</li>
+                        <li>Changelog link</li>
+                    </ul>
+                </li>
+                <li>Updated plugin description</li>
+            </ul>
 
-            ### 1.0.0
-            - Compatible with 2023.3
-            - Added popup notification
-            - Moved plugin settings page under "Appearance & Behavior"
+            <p>1.0.0</p>
+            <ul>
+                <li>Compatible with 2023.3</li>
+                <li>Added popup notification</li>
+                <li>Moved plugin settings page under "Appearance & Behavior"</li>
+            </ul>
 
-            ### 0.0.1-SNAPSHOT
-            - Initial Release
+            <p>0.0.1-SNAPSHOT</p>
+            <ul>
+                <li>Initial Release</li>
+            </ul>
         ]]>
     </change-notes>
 
