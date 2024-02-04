@@ -1,4 +1,5 @@
 ### 1.0.1
+- Fixing alignment issues in settings page
 - Updating README.md
   - Install instructions
   - GitHub preview image
