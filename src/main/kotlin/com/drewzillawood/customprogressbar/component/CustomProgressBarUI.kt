@@ -19,12 +19,25 @@ import java.awt.geom.RoundRectangle2D
 import javax.swing.JComponent
 import javax.swing.JProgressBar
 import javax.swing.SwingConstants
+import javax.swing.UIManager
 
 open class CustomProgressBarUI : DarculaProgressBarUI() {
 
     private val DEFAULT_WIDTH = 4
 
     private val settings = CustomProgressBarSettings.getInstance()
+
+    override fun updateIndeterminateAnimationIndex(startMillis: Long) {
+        val numFrames = settings.cycleTime / settings.repaintInterval
+        val timePassed = System.currentTimeMillis() - startMillis
+        this.animationIndex = (timePassed / settings.repaintInterval.toLong() % numFrames.toLong()).toInt()
+    }
+
+    override fun installDefaults() {
+        super.installDefaults()
+        UIManager.put("ProgressBar.repaintInterval", settings.repaintInterval)
+        UIManager.put("ProgressBar.cycleTime", settings.cycleTime)
+    }
 
     override fun paintIndeterminate(g: Graphics?, c: JComponent?) {
         if (!settings.isCustomProgressBarEnabled) {

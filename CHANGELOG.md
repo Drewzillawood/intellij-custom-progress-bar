@@ -1,3 +1,6 @@
+### 1.1.0
+- Initial support for cycle time and repaint interval sliders
+
 ### 1.0.1
 - Fixing alignment issues in settings page
 - Removed deprecated usage
