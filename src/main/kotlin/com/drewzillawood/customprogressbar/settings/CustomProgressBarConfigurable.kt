@@ -38,7 +38,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     private lateinit var cycleTimeSlider: JSlider
     private lateinit var repaintIntervalSlider: JSlider
 
-    private var settings = CustomProgressBarSettings.getInstance();
+    private var settings = CustomProgressBarSettings.getInstance()
 
     init {
         indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
@@ -64,22 +64,27 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         panel {
                             row("Cycle Time:") {
                                 cycleTimeSlider = slider(0, 2000, 250, 500)
-//                                    .bindValue(settings::cycleTime)
-                                    .bindValue(settings::cycleDemoTime)
+                                    .bindValue(
+                                        settings::cycleTime,
+                                        settings::cycleTime::set
+                                    )
                                     .component
-//                                cycleTimeSlider.addChangeListener {
-//                                    settings.cycleDemoTime = cycleTimeSlider.value
-//                                    indeterminateExampleProgressBar.repaint()
-//                                }
+                                cycleTimeSlider.addChangeListener {
+                                    settings.cycleDemoTime = cycleTimeSlider.value
+                                    indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
+                                }
                             }
                             row("Repaint Interval:") {
                                 repaintIntervalSlider = slider(0, 200, 25, 50)
-//                                    .bindValue(settings::repaintInterval)
-                                    .bindValue(settings::repaintDemoInterval)
+                                    .bindValue(
+                                        settings::repaintInterval,
+                                        settings::repaintInterval::set
+                                    )
                                     .component
-//                                repaintIntervalSlider.addChangeListener {
-//                                    settings.repaintDemoInterval = repaintIntervalSlider.value
-//                                }
+                                repaintIntervalSlider.addChangeListener {
+                                    settings.repaintDemoInterval = repaintIntervalSlider.value
+                                    indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
+                                }
                             }
                         }.resizableColumn()
                             .align(Align.CENTER)
