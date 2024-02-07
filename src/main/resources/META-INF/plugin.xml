@@ -21,6 +21,20 @@
 
     <change-notes>
         <![CDATA[
+            <p>2.1.0</p>
+            <ul>
+                <li>Correcting logic with enabling/disabling plugin
+                    <ul>
+                        <li>Was only visually enabling/disabling determinate</li>
+                    </ul>
+                </li>
+                <li>Rearranging settings ui
+                    <ul>
+                        <li>Hiding cycle-time and repaint-interval sliders behind "Advanced" check box</li>
+                        <li>Un-checking the "Advanced" check box will set the indeterminate slider values to their defaults</li>
+                    </ul>
+                </li>
+            </ul>
             <p>2.0.0</p>
             <ul>
                 <li>Implement cycle-time and repaint-interval sliders</li>

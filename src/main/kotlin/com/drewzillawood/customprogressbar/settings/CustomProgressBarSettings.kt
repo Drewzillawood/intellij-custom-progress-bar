@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable
 @State(name = "CustomProgressBarSettings", storages = [(Storage("Custom-ProgressBar-Settings.xml"))])
 class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSettings> {
 
-    var isCustomProgressBarEnabled = true
+    var isCustomProgressBarEnabled: Boolean = true
 
     var myIndeterminatePrimaryColor: Int = JBColor.GRAY.rgb
     var myIndeterminateSecondaryColor: Int = JBColor.lightGray.rgb
@@ -25,6 +25,7 @@ class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSett
 
     var version: String = ""
 
+    var isAdvancedOptionsEnabled: Boolean = false
     var cycleTime: Int = 800
     var cycleDemoTime: Int = 800
     var repaintInterval: Int = 50

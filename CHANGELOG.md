@@ -1,3 +1,10 @@
+### 2.1.0
+- Correcting logic with enabling/disabling plugin
+  - Was only visually enabling/disabling determinate
+- Rearranging settings ui
+  - Hiding cycle-time and repaint-interval sliders behind "Advanced" check box
+  - Un-checking the "Advanced" check box will set the indeterminate slider values to their defaults
+
 ### 2.0.0
 - Implement cycle-time and repaint-interval sliders
 
