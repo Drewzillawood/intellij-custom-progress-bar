@@ -1,3 +1,6 @@
+### 2.1.1
+- 2024.1-EAP Compatibility 
+
 ### 2.1.0
 - Correcting logic with enabling/disabling plugin
   - Was only visually enabling/disabling determinate

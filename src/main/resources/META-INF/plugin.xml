@@ -21,6 +21,11 @@
 
     <change-notes>
         <![CDATA[
+            <p>2.1.1</p>
+            <ul>
+                <li>2024.1-EAP Compatibility</li>
+            </ul>
+
             <p>2.1.0</p>
             <ul>
                 <li>Correcting logic with enabling/disabling plugin

@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.drewzillawood.CustomProgressBar"
-version = "2.1.0"
+version = "2.1.1"
 
 repositories {
     mavenCentral()
@@ -36,11 +36,11 @@ tasks {
 
     patchPluginXml {
         sinceBuild.set("233")
-        untilBuild.set("233.*")
+        untilBuild.set("241.*")
     }
 
     runPluginVerifier {
-        ideVersions.set(listOf("IC-2023.3"))
+        ideVersions.set(listOf("IC-2023.3", "IC-2024.1"))
     }
 
     signPlugin {
