@@ -1,3 +1,6 @@
+### 2.1.2
+- Bugfixes, seeing issues without restart so requiring restart for now
+
 ### 2.1.1
 - 2024.1-EAP Compatibility 
 
