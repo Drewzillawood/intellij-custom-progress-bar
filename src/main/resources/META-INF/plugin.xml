@@ -21,6 +21,11 @@
 
     <change-notes>
         <![CDATA[
+            <p>2.1.3</p>
+            <ul>
+                <li>2024.2 Compatibility</li>
+            </ul>
+
             <p>2.1.2</p>
             <ul>
                 <li>Bugfixes, seeing issues without restart so requiring restart for now</li>

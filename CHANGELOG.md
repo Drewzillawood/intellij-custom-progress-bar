@@ -1,3 +1,6 @@
+### 2.1.3
+- 2024.2 Compatibility
+
 ### 2.1.2
 - Bugfixes, seeing issues without restart so requiring restart for now
 
