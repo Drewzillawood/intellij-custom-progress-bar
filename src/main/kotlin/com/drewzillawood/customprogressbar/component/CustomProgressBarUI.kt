@@ -28,19 +28,19 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     private val settings = CustomProgressBarSettings.getInstance()
 
     override fun updateIndeterminateAnimationIndex(startMillis: Long) {
-        val numFrames = settings.cycleTime / settings.repaintInterval
+        val numFrames = settings.state.cycleTime / settings.state.repaintInterval
         val timePassed = System.currentTimeMillis() - startMillis
-        this.animationIndex = (timePassed / settings.repaintInterval.toLong() % numFrames.toLong()).toInt()
+        this.animationIndex = (timePassed / settings.state.repaintInterval.toLong() % numFrames.toLong()).toInt()
     }
 
     override fun installDefaults() {
         super.installDefaults()
-        UIManager.put("ProgressBar.repaintInterval", settings.repaintInterval)
-        UIManager.put("ProgressBar.cycleTime", settings.cycleTime)
+        UIManager.put("ProgressBar.repaintInterval", settings.state.repaintInterval)
+        UIManager.put("ProgressBar.cycleTime", settings.state.cycleTime)
     }
 
     override fun paintIndeterminate(g: Graphics?, c: JComponent?) {
-        if (!settings.isCustomProgressBarEnabled) {
+        if (!settings.state.isCustomProgressBarEnabled) {
             super.paintIndeterminate(g, c)
             return
         }
@@ -146,11 +146,11 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     open fun getIndeterminatePrimaryColor(): Color {
-        return Color(settings.myIndeterminatePrimaryColor)
+        return Color(settings.state.myIndeterminatePrimaryColor)
     }
 
     open fun getIndeterminateSecondaryColor(): Color {
-        return Color(settings.myIndeterminateSecondaryColor)
+        return Color(settings.state.myIndeterminateSecondaryColor)
     }
 
     override fun getPreferredSize(c: JComponent?): Dimension {
@@ -187,7 +187,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     override fun paintDeterminate(g: Graphics?, c: JComponent?) {
-        if(!settings.isCustomProgressBarEnabled) {
+        if(!settings.state.isCustomProgressBarEnabled) {
             super.paintDeterminate(g, c)
             return
         }
@@ -264,10 +264,10 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     open fun getDeterminatePrimaryColor(): Color {
-        return Color(settings.myDeterminatePrimaryColor)
+        return Color(settings.state.myDeterminatePrimaryColor)
     }
 
     open fun getDeterminateSecondaryColor(): Color {
-        return Color(settings.myDeterminateSecondaryColor)
+        return Color(settings.state.myDeterminateSecondaryColor)
     }
 }

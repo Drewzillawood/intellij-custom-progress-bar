@@ -9,30 +9,30 @@ open class CustomProgressBarDemoUI : CustomProgressBarUI() {
     private val settings = CustomProgressBarSettings.getInstance()
 
     override fun updateIndeterminateAnimationIndex(startMillis: Long) {
-        val numFrames = settings.cycleDemoTime / settings.repaintDemoInterval
+        val numFrames = settings.state.cycleDemoTime / settings.state.repaintDemoInterval
         val timePassed = System.currentTimeMillis() - startMillis
-        this.animationIndex = (timePassed / settings.repaintDemoInterval.toLong() % numFrames.toLong()).toInt()
+        this.animationIndex = (timePassed / settings.state.repaintDemoInterval.toLong() % numFrames.toLong()).toInt()
     }
 
     override fun installDefaults() {
         super.installDefaults()
-        UIManager.put("ProgressBar.repaintInterval", settings.repaintDemoInterval)
-        UIManager.put("ProgressBar.cycleTime", settings.cycleDemoTime)
+        UIManager.put("ProgressBar.repaintInterval", settings.state.repaintDemoInterval)
+        UIManager.put("ProgressBar.cycleTime", settings.state.cycleDemoTime)
     }
 
     override fun getIndeterminateSecondaryColor(): Color {
-        return Color(settings.myIndeterminateSecondaryDemoColor)
+        return Color(settings.state.myIndeterminateSecondaryDemoColor)
     }
 
     override fun getIndeterminatePrimaryColor(): Color {
-        return Color(settings.myIndeterminatePrimaryDemoColor)
+        return Color(settings.state.myIndeterminatePrimaryDemoColor)
     }
 
     override fun getDeterminatePrimaryColor(): Color {
-        return Color(settings.myDeterminatePrimaryDemoColor)
+        return Color(settings.state.myDeterminatePrimaryDemoColor)
     }
 
     override fun getDeterminateSecondaryColor(): Color {
-        return Color(settings.myDeterminateSecondaryDemoColor)
+        return Color(settings.state.myDeterminateSecondaryDemoColor)
     }
 }
