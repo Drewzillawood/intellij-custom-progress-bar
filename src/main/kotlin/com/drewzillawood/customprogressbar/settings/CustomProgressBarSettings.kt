@@ -1,41 +1,37 @@
 package com.drewzillawood.customprogressbar.settings
 
-import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.BaseState
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.SimplePersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.ui.JBColor
-import com.intellij.util.xmlb.XmlSerializerUtil
-import org.jetbrains.annotations.Nullable
 
+@Service
 @State(name = "CustomProgressBarSettings", storages = [(Storage("Custom-ProgressBar-Settings.xml"))])
-class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSettings> {
+class CustomProgressBarSettings : SimplePersistentStateComponent<CustomProgressBarSettings.State>(State()) {
 
-    var isCustomProgressBarEnabled: Boolean = true
+    class State : BaseState() {
+        var isCustomProgressBarEnabled: Boolean by property(true)
 
-    var myIndeterminatePrimaryColor: Int = JBColor.GRAY.rgb
-    var myIndeterminateSecondaryColor: Int = JBColor.lightGray.rgb
-    var myIndeterminatePrimaryDemoColor: Int = JBColor.GRAY.rgb
-    var myIndeterminateSecondaryDemoColor: Int = JBColor.lightGray.rgb
+        var myIndeterminatePrimaryColor: Int by property(JBColor.GRAY.rgb)
+        var myIndeterminateSecondaryColor: Int by property(JBColor.lightGray.rgb)
+        var myIndeterminatePrimaryDemoColor: Int by property(JBColor.GRAY.rgb)
+        var myIndeterminateSecondaryDemoColor: Int by property(JBColor.lightGray.rgb)
 
-    var myDeterminatePrimaryColor: Int = JBColor.GRAY.rgb
-    var myDeterminateSecondaryColor: Int = JBColor.lightGray.rgb
-    var myDeterminatePrimaryDemoColor: Int = JBColor.GRAY.rgb
-    var myDeterminateSecondaryDemoColor: Int = JBColor.lightGray.rgb
+        var myDeterminatePrimaryColor: Int by property(JBColor.GRAY.rgb)
+        var myDeterminateSecondaryColor: Int by property(JBColor.lightGray.rgb)
+        var myDeterminatePrimaryDemoColor: Int by property(JBColor.GRAY.rgb)
+        var myDeterminateSecondaryDemoColor: Int by property(JBColor.lightGray.rgb)
 
-    var version: String = ""
+        var version: String? by string()
 
-    var isAdvancedOptionsEnabled: Boolean = false
-    var cycleTime: Int = 800
-    var cycleDemoTime: Int = 800
-    var repaintInterval: Int = 50
-    var repaintDemoInterval: Int = 50
-
-    @Nullable
-    override fun getState() = this
-
-    override fun loadState(state: CustomProgressBarSettings) {
-        XmlSerializerUtil.copyBean(state, this);
+        var isAdvancedOptionsEnabled: Boolean by property(false)
+        var cycleTime: Int by property(800)
+        var cycleDemoTime: Int by property(800)
+        var repaintInterval: Int by property(50)
+        var repaintDemoInterval: Int by property(50)
     }
 
     companion object {
