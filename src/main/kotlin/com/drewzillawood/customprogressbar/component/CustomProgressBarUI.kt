@@ -146,11 +146,11 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     open fun getIndeterminatePrimaryColor(): Color {
-        return Color(settings.state.myIndeterminatePrimaryColor)
+        return settings.state.myIndeterminatePrimaryColor
     }
 
     open fun getIndeterminateSecondaryColor(): Color {
-        return Color(settings.state.myIndeterminateSecondaryColor)
+        return settings.state.myIndeterminateSecondaryColor
     }
 
     override fun getPreferredSize(c: JComponent?): Dimension {
@@ -264,10 +264,10 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     open fun getDeterminatePrimaryColor(): Color {
-        return Color(settings.state.myDeterminatePrimaryColor)
+        return settings.state.myDeterminatePrimaryColor
     }
 
     open fun getDeterminateSecondaryColor(): Color {
-        return Color(settings.state.myDeterminateSecondaryColor)
+        return settings.state.myDeterminateSecondaryColor
     }
 }

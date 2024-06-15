@@ -21,18 +21,18 @@ open class CustomProgressBarDemoUI : CustomProgressBarUI() {
     }
 
     override fun getIndeterminateSecondaryColor(): Color {
-        return Color(settings.state.myIndeterminateSecondaryDemoColor)
+        return settings.state.myIndeterminateSecondaryDemoColor
     }
 
     override fun getIndeterminatePrimaryColor(): Color {
-        return Color(settings.state.myIndeterminatePrimaryDemoColor)
+        return settings.state.myIndeterminatePrimaryDemoColor
     }
 
     override fun getDeterminatePrimaryColor(): Color {
-        return Color(settings.state.myDeterminatePrimaryDemoColor)
+        return settings.state.myDeterminatePrimaryDemoColor
     }
 
     override fun getDeterminateSecondaryColor(): Color {
-        return Color(settings.state.myDeterminateSecondaryDemoColor)
+        return settings.state.myDeterminateSecondaryDemoColor
     }
 }
