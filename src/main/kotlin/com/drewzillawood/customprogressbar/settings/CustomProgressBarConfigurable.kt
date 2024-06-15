@@ -74,22 +74,22 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                                 myIndeterminatePrimaryColorChooser = ColorPanel()
                                 cell(myIndeterminatePrimaryColorChooser)
                                 myIndeterminatePrimaryColorChooser.bindColor(
-                                    { Color(settings.state.myIndeterminatePrimaryColor) },
-                                    { settings.state.myIndeterminatePrimaryColor = it.rgb }
+                                    settings.state::myIndeterminatePrimaryColor,
+                                    settings.state::myIndeterminatePrimaryColor::set
                                 )
                                 myIndeterminatePrimaryColorChooser.addActionListener {
-                                    settings.state.myIndeterminatePrimaryDemoColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
+                                    settings.state.myIndeterminatePrimaryDemoColor = myIndeterminatePrimaryColorChooser.selectedColor!!
                                 }
                             }.resizableRow()
                             row("Secondary:") {
                                 myIndeterminateSecondaryColorChooser = ColorPanel()
                                 cell(myIndeterminateSecondaryColorChooser)
                                 myIndeterminateSecondaryColorChooser.bindColor(
-                                    { Color(settings.state.myIndeterminateSecondaryColor) },
-                                    { settings.state.myIndeterminateSecondaryColor = it.rgb }
+                                    settings.state::myIndeterminateSecondaryColor,
+                                    settings.state::myIndeterminateSecondaryColor::set
                                 )
                                 myIndeterminateSecondaryColorChooser.addActionListener {
-                                    settings.state.myIndeterminateSecondaryDemoColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
+                                    settings.state.myIndeterminateSecondaryDemoColor = myIndeterminateSecondaryColorChooser.selectedColor!!
                                 }
                             }.resizableRow()
                         }
@@ -142,24 +142,24 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                                 myDeterminatePrimaryColorChooser = ColorPanel()
                                 cell(myDeterminatePrimaryColorChooser)
                                 myDeterminatePrimaryColorChooser.bindColor(
-                                    { Color(settings.state.myDeterminatePrimaryColor) },
-                                    { settings.state.myDeterminatePrimaryColor = it.rgb }
+                                    settings.state::myDeterminatePrimaryColor,
+                                    settings.state::myDeterminatePrimaryColor::set
                                 )
                                 myDeterminatePrimaryColorChooser.addActionListener {
                                     settings.state.myDeterminatePrimaryDemoColor =
-                                        myDeterminatePrimaryColorChooser.selectedColor!!.rgb
+                                        myDeterminatePrimaryColorChooser.selectedColor!!
                                 }
                             }
                             row("Secondary:") {
                                 myDeterminateSecondaryColorChooser = ColorPanel()
                                 cell(myDeterminateSecondaryColorChooser)
                                 myDeterminateSecondaryColorChooser.bindColor(
-                                    { Color(settings.state.myDeterminateSecondaryColor) },
-                                    { settings.state.myDeterminateSecondaryColor = it.rgb }
+                                    settings.state::myDeterminateSecondaryColor,
+                                    settings.state::myDeterminateSecondaryColor::set
                                 )
                                 myDeterminateSecondaryColorChooser.addActionListener {
                                     settings.state.myDeterminateSecondaryDemoColor =
-                                        myDeterminateSecondaryColorChooser.selectedColor!!.rgb
+                                        myDeterminateSecondaryColorChooser.selectedColor!!
                                 }
                             }
                         }
@@ -190,10 +190,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     }
 
     override fun isModified(): Boolean {
-        return myIndeterminatePrimaryColorChooser.selectedColor != Color(settings.state.myIndeterminatePrimaryColor)
-                || myIndeterminateSecondaryColorChooser.selectedColor != Color(settings.state.myIndeterminateSecondaryColor)
-                || myDeterminatePrimaryColorChooser.selectedColor != Color(settings.state.myDeterminatePrimaryColor)
-                || myDeterminateSecondaryColorChooser.selectedColor != Color(settings.state.myDeterminateSecondaryColor)
+        return myIndeterminatePrimaryColorChooser.selectedColor != settings.state.myIndeterminatePrimaryColor
+                || myIndeterminateSecondaryColorChooser.selectedColor != settings.state.myIndeterminateSecondaryColor
+                || myDeterminatePrimaryColorChooser.selectedColor != settings.state.myDeterminatePrimaryColor
+                || myDeterminateSecondaryColorChooser.selectedColor != settings.state.myDeterminateSecondaryColor
                 || advancedOptionsCheckBox.isSelected != settings.state.isAdvancedOptionsEnabled
                 || cycleTimeSlider.value != settings.state.cycleTime
                 || repaintIntervalSlider.value != settings.state.repaintInterval
@@ -210,10 +210,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
         settings.state.repaintDemoInterval = settings.state.repaintInterval
 
         enabledCustomProgressBar.isSelected = settings.state.isCustomProgressBarEnabled
-        myIndeterminatePrimaryColorChooser.selectedColor = Color(settings.state.myIndeterminatePrimaryColor)
-        myIndeterminateSecondaryColorChooser.selectedColor = Color(settings.state.myIndeterminateSecondaryColor)
-        myDeterminatePrimaryColorChooser.selectedColor = Color(settings.state.myDeterminatePrimaryColor)
-        myDeterminateSecondaryColorChooser.selectedColor = Color(settings.state.myDeterminateSecondaryColor)
+        myIndeterminatePrimaryColorChooser.selectedColor = settings.state.myIndeterminatePrimaryColor
+        myIndeterminateSecondaryColorChooser.selectedColor = settings.state.myIndeterminateSecondaryColor
+        myDeterminatePrimaryColorChooser.selectedColor = settings.state.myDeterminatePrimaryColor
+        myDeterminateSecondaryColorChooser.selectedColor = settings.state.myDeterminateSecondaryColor
         advancedOptionsCheckBox.isSelected = settings.state.isAdvancedOptionsEnabled
         cycleTimeSlider.value = settings.state.cycleTime
         repaintIntervalSlider.value = settings.state.repaintInterval
@@ -230,9 +230,9 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
         val settings = CustomProgressBarSettings.getInstance()
         settings.state.isCustomProgressBarEnabled = enabledCustomProgressBar.isSelected
 
-        settings.state.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
+        settings.state.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!
         settings.state.myIndeterminatePrimaryDemoColor = settings.state.myIndeterminatePrimaryColor
-        settings.state.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
+        settings.state.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!
         settings.state.myIndeterminateSecondaryDemoColor = settings.state.myIndeterminateSecondaryColor
 
         settings.state.isAdvancedOptionsEnabled = advancedOptionsCheckBox.isSelected
@@ -241,9 +241,9 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
         settings.state.repaintInterval = repaintIntervalSlider.value
         settings.state.repaintDemoInterval = settings.state.repaintInterval
 
-        settings.state.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
+        settings.state.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!
         settings.state.myDeterminatePrimaryDemoColor = settings.state.myDeterminatePrimaryColor
-        settings.state.myDeterminateSecondaryColor = myDeterminateSecondaryColorChooser.selectedColor!!.rgb
+        settings.state.myDeterminateSecondaryColor = myDeterminateSecondaryColorChooser.selectedColor!!
         settings.state.myDeterminateSecondaryDemoColor = settings.state.myDeterminateSecondaryColor
         panel.apply()
     }

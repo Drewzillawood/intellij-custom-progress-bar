@@ -7,6 +7,9 @@ import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.components.service
 import com.intellij.ui.JBColor
+import com.intellij.util.xmlb.Converter
+import com.intellij.util.xmlb.annotations.Attribute
+import java.awt.Color
 
 @Service
 @State(name = "CustomProgressBarSettings", storages = [(Storage("Custom-ProgressBar-Settings.xml"))])
@@ -15,15 +18,22 @@ class CustomProgressBarSettings : SimplePersistentStateComponent<CustomProgressB
     class State : BaseState() {
         var isCustomProgressBarEnabled: Boolean by property(true)
 
-        var myIndeterminatePrimaryColor: Int by property(JBColor.GRAY.rgb)
-        var myIndeterminateSecondaryColor: Int by property(JBColor.lightGray.rgb)
-        var myIndeterminatePrimaryDemoColor: Int by property(JBColor.GRAY.rgb)
-        var myIndeterminateSecondaryDemoColor: Int by property(JBColor.lightGray.rgb)
-
-        var myDeterminatePrimaryColor: Int by property(JBColor.GRAY.rgb)
-        var myDeterminateSecondaryColor: Int by property(JBColor.lightGray.rgb)
-        var myDeterminatePrimaryDemoColor: Int by property(JBColor.GRAY.rgb)
-        var myDeterminateSecondaryDemoColor: Int by property(JBColor.lightGray.rgb)
+        @get:Attribute(converter = ColorConverter::class)
+        var myIndeterminatePrimaryColor: Color by property(JBColor.GRAY) { it == JBColor.GRAY }
+        @get:Attribute(converter = ColorConverter::class)
+        var myIndeterminateSecondaryColor: Color by property(JBColor.lightGray) { it == JBColor.lightGray }
+        @get:Attribute(converter = ColorConverter::class)
+        var myIndeterminatePrimaryDemoColor: Color by property(JBColor.GRAY) { it == JBColor.GRAY }
+        @get:Attribute(converter = ColorConverter::class)
+        var myIndeterminateSecondaryDemoColor: Color by property(JBColor.lightGray) { it == JBColor.lightGray }
+        @get:Attribute(converter = ColorConverter::class)
+        var myDeterminatePrimaryColor: Color by property(JBColor.GRAY) { it == JBColor.GRAY }
+        @get:Attribute(converter = ColorConverter::class)
+        var myDeterminateSecondaryColor: Color by property(JBColor.lightGray) { it == JBColor.lightGray }
+        @get:Attribute(converter = ColorConverter::class)
+        var myDeterminatePrimaryDemoColor: Color by property(JBColor.GRAY) { it == JBColor.GRAY }
+        @get:Attribute(converter = ColorConverter::class)
+        var myDeterminateSecondaryDemoColor: Color by property(JBColor.lightGray) { it == JBColor.lightGray }
 
         var version: String? by string()
 
@@ -38,4 +48,10 @@ class CustomProgressBarSettings : SimplePersistentStateComponent<CustomProgressB
         @JvmStatic
         fun getInstance() = service<CustomProgressBarSettings>()
     }
+}
+
+private class ColorConverter : Converter<Color>() {
+    override fun toString(value: Color): String = value.rgb.toString()
+
+    override fun fromString(value: String): Color = Color(value.toInt())
 }
