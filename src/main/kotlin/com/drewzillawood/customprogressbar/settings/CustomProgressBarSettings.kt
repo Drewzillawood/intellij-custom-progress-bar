@@ -18,22 +18,25 @@ class CustomProgressBarSettings : SimplePersistentStateComponent<CustomProgressB
     class State : BaseState() {
         var isCustomProgressBarEnabled: Boolean by property(true)
 
+        private val DEFAULT_PRIMARY_BLUE = Color(64, 115, 213)
+        private val DEFAULT_SECONDARY_BLUE = Color(100, 148, 243)
+
         @get:Attribute(converter = ColorConverter::class)
-        var myIndeterminatePrimaryColor: Color by property(JBColor.GRAY) { it == JBColor.GRAY }
+        var myIndeterminatePrimaryColor: Color by property(DEFAULT_PRIMARY_BLUE) { it == DEFAULT_PRIMARY_BLUE }
         @get:Attribute(converter = ColorConverter::class)
-        var myIndeterminateSecondaryColor: Color by property(JBColor.lightGray) { it == JBColor.lightGray }
+        var myIndeterminateSecondaryColor: Color by property(DEFAULT_SECONDARY_BLUE) { it == DEFAULT_SECONDARY_BLUE }
         @get:Attribute(converter = ColorConverter::class)
-        var myIndeterminatePrimaryDemoColor: Color by property(JBColor.GRAY) { it == JBColor.GRAY }
+        var myIndeterminatePrimaryDemoColor: Color by property(DEFAULT_PRIMARY_BLUE) { it == DEFAULT_PRIMARY_BLUE }
         @get:Attribute(converter = ColorConverter::class)
-        var myIndeterminateSecondaryDemoColor: Color by property(JBColor.lightGray) { it == JBColor.lightGray }
+        var myIndeterminateSecondaryDemoColor: Color by property(DEFAULT_SECONDARY_BLUE) { it == DEFAULT_SECONDARY_BLUE }
         @get:Attribute(converter = ColorConverter::class)
-        var myDeterminatePrimaryColor: Color by property(JBColor.GRAY) { it == JBColor.GRAY }
+        var myDeterminatePrimaryColor: Color by property(DEFAULT_PRIMARY_BLUE) { it == DEFAULT_PRIMARY_BLUE }
         @get:Attribute(converter = ColorConverter::class)
-        var myDeterminateSecondaryColor: Color by property(JBColor.lightGray) { it == JBColor.lightGray }
+        var myDeterminateSecondaryColor: Color by property(JBColor.GRAY) { it == JBColor.GRAY }
         @get:Attribute(converter = ColorConverter::class)
-        var myDeterminatePrimaryDemoColor: Color by property(JBColor.GRAY) { it == JBColor.GRAY }
+        var myDeterminatePrimaryDemoColor: Color by property(DEFAULT_PRIMARY_BLUE) { it == DEFAULT_PRIMARY_BLUE }
         @get:Attribute(converter = ColorConverter::class)
-        var myDeterminateSecondaryDemoColor: Color by property(JBColor.lightGray) { it == JBColor.lightGray }
+        var myDeterminateSecondaryDemoColor: Color by property(JBColor.GRAY) { it == JBColor.GRAY }
 
         var version: String? by string()
 
