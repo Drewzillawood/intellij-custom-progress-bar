@@ -1,5 +1,6 @@
 package com.drewzillawood.customprogressbar.component
 
+import com.drewzillawood.customprogressbar.domain.GetDemoConfigUseCase
 import com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings
 import java.awt.Color
 import javax.swing.UIManager
@@ -7,6 +8,8 @@ import javax.swing.UIManager
 open class CustomProgressBarDemoUI : CustomProgressBarUI() {
 
     private val settings = CustomProgressBarSettings.getInstance()
+    private val getDemoConfig = GetDemoConfigUseCase.configService()
+    private var currentDemo = getDemoConfig.read()
 
     override fun updateIndeterminateAnimationIndex(startMillis: Long) {
         val numFrames = settings.cycleDemoTime / settings.repaintDemoInterval
@@ -21,18 +24,18 @@ open class CustomProgressBarDemoUI : CustomProgressBarUI() {
     }
 
     override fun getIndeterminateSecondaryColor(): Color {
-        return Color(settings.myIndeterminateSecondaryDemoColor)
+        return Color(currentDemo.myIndeterminateSecondaryColor)
     }
 
     override fun getIndeterminatePrimaryColor(): Color {
-        return Color(settings.myIndeterminatePrimaryDemoColor)
+        return Color(currentDemo.myIndeterminatePrimaryColor)
     }
 
     override fun getDeterminatePrimaryColor(): Color {
-        return Color(settings.myDeterminatePrimaryDemoColor)
+        return Color(currentDemo.myDeterminatePrimaryColor)
     }
 
     override fun getDeterminateSecondaryColor(): Color {
-        return Color(settings.myDeterminateSecondaryDemoColor)
+        return Color(currentDemo.myDeterminateSecondaryColor)
     }
 }

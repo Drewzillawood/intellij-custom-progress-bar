@@ -1,5 +1,6 @@
 package com.drewzillawood.customprogressbar.component
 
+import com.drewzillawood.customprogressbar.domain.GetConfigUseCase
 import com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings
 import com.intellij.ide.ui.laf.darcula.ui.DarculaProgressBarUI
 import com.intellij.ui.scale.JBUIScale
@@ -16,6 +17,8 @@ import java.awt.Shape
 import java.awt.geom.AffineTransform
 import java.awt.geom.Rectangle2D
 import java.awt.geom.RoundRectangle2D
+import java.io.File
+import javax.imageio.ImageIO
 import javax.swing.JComponent
 import javax.swing.JProgressBar
 import javax.swing.SwingConstants
@@ -26,6 +29,8 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     private val DEFAULT_WIDTH = 4
 
     private val settings = CustomProgressBarSettings.getInstance()
+    private val getConfig = GetConfigUseCase.configService()
+    private var current = getConfig.read()
 
     override fun updateIndeterminateAnimationIndex(startMillis: Long) {
         val numFrames = settings.cycleTime / settings.repaintInterval
@@ -146,11 +151,11 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     open fun getIndeterminatePrimaryColor(): Color {
-        return Color(settings.myIndeterminatePrimaryColor)
+        return Color(current.myIndeterminatePrimaryColor)
     }
 
     open fun getIndeterminateSecondaryColor(): Color {
-        return Color(settings.myIndeterminateSecondaryColor)
+        return Color(current.myIndeterminateSecondaryColor)
     }
 
     override fun getPreferredSize(c: JComponent?): Dimension {
@@ -264,10 +269,10 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     open fun getDeterminatePrimaryColor(): Color {
-        return Color(settings.myDeterminatePrimaryColor)
+        return Color(current.myDeterminatePrimaryColor)
     }
 
     open fun getDeterminateSecondaryColor(): Color {
-        return Color(settings.myDeterminateSecondaryColor)
+        return Color(current.myDeterminateSecondaryColor)
     }
 }

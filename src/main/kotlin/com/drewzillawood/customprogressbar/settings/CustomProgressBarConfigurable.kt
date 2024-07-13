@@ -1,6 +1,12 @@
 package com.drewzillawood.customprogressbar.settings
 
 import com.drewzillawood.customprogressbar.component.CustomProgressBarDemoUI
+import com.drewzillawood.customprogressbar.data.model.PersistentConfigs
+import com.drewzillawood.customprogressbar.domain.GetConfigUseCase
+import com.drewzillawood.customprogressbar.domain.GetDemoConfigUseCase
+import com.drewzillawood.customprogressbar.domain.SaveConfigUseCase
+import com.drewzillawood.customprogressbar.domain.SaveDemoConfigUseCase
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
@@ -25,6 +31,15 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     private val CYCLE_TIME_DEFAULT = 800
     private val REPAINT_INTERVAL_DEFAULT = 50
+
+    private val getConfig = GetConfigUseCase.configService()
+    private val saveConfig = SaveConfigUseCase.configService()
+    private var initial = getConfig.read()
+    private var current = initial.copy()
+
+    private val getDemoConfig = GetDemoConfigUseCase.configService()
+    private val saveDemoConfig = SaveDemoConfigUseCase.configService()
+    private var currentDemo = getDemoConfig.read()
 
     private val indeterminateExampleProgressBar = JProgressBar()
     private val determinateExampleProgressBar = JProgressBar()
@@ -74,22 +89,24 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                                 myIndeterminatePrimaryColorChooser = ColorPanel()
                                 cell(myIndeterminatePrimaryColorChooser)
                                 myIndeterminatePrimaryColorChooser.bindColor(
-                                    { Color(settings.myIndeterminatePrimaryColor) },
-                                    { settings.myIndeterminatePrimaryColor = it.rgb }
+                                    { Color(current.myIndeterminatePrimaryColor) },
+                                    { current.myIndeterminatePrimaryColor = it.rgb }
                                 )
                                 myIndeterminatePrimaryColorChooser.addActionListener {
-                                    settings.myIndeterminatePrimaryDemoColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
+                                    currentDemo.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
+                                    saveDemoConfig.save(currentDemo)
                                 }
                             }.resizableRow()
                             row("Secondary:") {
                                 myIndeterminateSecondaryColorChooser = ColorPanel()
                                 cell(myIndeterminateSecondaryColorChooser)
                                 myIndeterminateSecondaryColorChooser.bindColor(
-                                    { Color(settings.myIndeterminateSecondaryColor) },
-                                    { settings.myIndeterminateSecondaryColor = it.rgb }
+                                    { Color(current.myIndeterminateSecondaryColor) },
+                                    { current.myIndeterminateSecondaryColor = it.rgb }
                                 )
                                 myIndeterminateSecondaryColorChooser.addActionListener {
-                                    settings.myIndeterminateSecondaryDemoColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
+                                    currentDemo.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
+                                    saveDemoConfig.save(currentDemo)
                                 }
                             }.resizableRow()
                         }
@@ -142,24 +159,25 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                                 myDeterminatePrimaryColorChooser = ColorPanel()
                                 cell(myDeterminatePrimaryColorChooser)
                                 myDeterminatePrimaryColorChooser.bindColor(
-                                    { Color(settings.myDeterminatePrimaryColor) },
-                                    { settings.myDeterminatePrimaryColor = it.rgb }
+                                    { Color(current.myDeterminatePrimaryColor) },
+                                    { current.myDeterminatePrimaryColor = it.rgb }
                                 )
                                 myDeterminatePrimaryColorChooser.addActionListener {
-                                    settings.myDeterminatePrimaryDemoColor =
-                                        myDeterminatePrimaryColorChooser.selectedColor!!.rgb
+                                    currentDemo.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
+                                    saveDemoConfig.save(currentDemo)
                                 }
                             }
                             row("Secondary:") {
                                 myDeterminateSecondaryColorChooser = ColorPanel()
                                 cell(myDeterminateSecondaryColorChooser)
                                 myDeterminateSecondaryColorChooser.bindColor(
-                                    { Color(settings.myDeterminateSecondaryColor) },
-                                    { settings.myDeterminateSecondaryColor = it.rgb }
+                                    { Color(current.myDeterminateSecondaryColor) },
+                                    { current.myDeterminateSecondaryColor = it.rgb }
                                 )
                                 myDeterminateSecondaryColorChooser.addActionListener {
-                                    settings.myDeterminateSecondaryDemoColor =
+                                    currentDemo.myDeterminateSecondaryColor =
                                         myDeterminateSecondaryColorChooser.selectedColor!!.rgb
+                                    saveDemoConfig.save(currentDemo)
                                 }
                             }
                         }
@@ -190,10 +208,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     }
 
     override fun isModified(): Boolean {
-        return myIndeterminatePrimaryColorChooser.selectedColor != Color(settings.myIndeterminatePrimaryColor)
-                || myIndeterminateSecondaryColorChooser.selectedColor != Color(settings.myIndeterminateSecondaryColor)
-                || myDeterminatePrimaryColorChooser.selectedColor != Color(settings.myDeterminatePrimaryColor)
-                || myDeterminateSecondaryColorChooser.selectedColor != Color(settings.myDeterminateSecondaryColor)
+        return myIndeterminatePrimaryColorChooser.selectedColor != Color(initial.myIndeterminatePrimaryColor)
+                || myIndeterminateSecondaryColorChooser.selectedColor != Color(initial.myIndeterminateSecondaryColor)
+                || myDeterminatePrimaryColorChooser.selectedColor != Color(initial.myDeterminatePrimaryColor)
+                || myDeterminateSecondaryColorChooser.selectedColor != Color(initial.myDeterminateSecondaryColor)
                 || advancedOptionsCheckBox.isSelected != settings.isAdvancedOptionsEnabled
                 || cycleTimeSlider.value != settings.cycleTime
                 || repaintIntervalSlider.value != settings.repaintInterval
@@ -202,18 +220,18 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     override fun reset() {
         val settings = CustomProgressBarSettings.getInstance()
-        settings.myIndeterminatePrimaryDemoColor = settings.myIndeterminatePrimaryColor
-        settings.myIndeterminateSecondaryDemoColor = settings.myIndeterminateSecondaryColor
-        settings.myDeterminatePrimaryDemoColor = settings.myDeterminatePrimaryColor
-        settings.myDeterminateSecondaryDemoColor = settings.myDeterminateSecondaryColor
+        currentDemo.myIndeterminatePrimaryColor = current.myIndeterminatePrimaryColor
+        currentDemo.myIndeterminateSecondaryColor = current.myIndeterminateSecondaryColor
+        currentDemo.myDeterminatePrimaryColor = current.myDeterminatePrimaryColor
+        currentDemo.myDeterminateSecondaryColor = current.myDeterminateSecondaryColor
         settings.cycleDemoTime = settings.cycleTime
         settings.repaintDemoInterval = settings.repaintInterval
 
         enabledCustomProgressBar.isSelected = settings.isCustomProgressBarEnabled
-        myIndeterminatePrimaryColorChooser.selectedColor = Color(settings.myIndeterminatePrimaryColor)
-        myIndeterminateSecondaryColorChooser.selectedColor = Color(settings.myIndeterminateSecondaryColor)
-        myDeterminatePrimaryColorChooser.selectedColor = Color(settings.myDeterminatePrimaryColor)
-        myDeterminateSecondaryColorChooser.selectedColor = Color(settings.myDeterminateSecondaryColor)
+        myIndeterminatePrimaryColorChooser.selectedColor = Color(current.myIndeterminatePrimaryColor)
+        myIndeterminateSecondaryColorChooser.selectedColor = Color(current.myIndeterminateSecondaryColor)
+        myDeterminatePrimaryColorChooser.selectedColor = Color(current.myDeterminatePrimaryColor)
+        myDeterminateSecondaryColorChooser.selectedColor = Color(current.myDeterminateSecondaryColor)
         advancedOptionsCheckBox.isSelected = settings.isAdvancedOptionsEnabled
         cycleTimeSlider.value = settings.cycleTime
         repaintIntervalSlider.value = settings.repaintInterval
@@ -230,21 +248,20 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
         val settings = CustomProgressBarSettings.getInstance()
         settings.isCustomProgressBarEnabled = enabledCustomProgressBar.isSelected
 
-        settings.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
-        settings.myIndeterminatePrimaryDemoColor = settings.myIndeterminatePrimaryColor
-        settings.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
-        settings.myIndeterminateSecondaryDemoColor = settings.myIndeterminateSecondaryColor
+        saveConfig.save(PersistentConfigs(
+            myIndeterminatePrimaryColorChooser.selectedColor!!.rgb,
+            myIndeterminateSecondaryColorChooser.selectedColor!!.rgb,
+            myDeterminatePrimaryColorChooser.selectedColor!!.rgb,
+            myDeterminateSecondaryColorChooser.selectedColor!!.rgb
+        ))
+        initial = getConfig.read()
+        current = initial.copy()
 
         settings.isAdvancedOptionsEnabled = advancedOptionsCheckBox.isSelected
         settings.cycleTime = cycleTimeSlider.value
         settings.cycleDemoTime = settings.cycleTime
         settings.repaintInterval = repaintIntervalSlider.value
         settings.repaintDemoInterval = settings.repaintInterval
-
-        settings.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
-        settings.myDeterminatePrimaryDemoColor = settings.myDeterminatePrimaryColor
-        settings.myDeterminateSecondaryColor = myDeterminateSecondaryColorChooser.selectedColor!!.rgb
-        settings.myDeterminateSecondaryDemoColor = settings.myDeterminateSecondaryColor
         panel.apply()
     }
 
