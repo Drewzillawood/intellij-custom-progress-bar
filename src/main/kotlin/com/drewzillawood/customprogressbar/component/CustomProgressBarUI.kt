@@ -94,6 +94,8 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
                     endColor,
                     true
                 )
+                val image = ImageIO.read(File("C:\\Users\\drew\\IdeaProjects\\CustomProgressBar\\src\\main\\resources\\META-INF\\pluginIcon.svg"))
+//                g2.drawRenderedImage(image, xOffset, yOffset, null)
             } else {
                 shape = getShapedRect(
                     xOffset.toFloat(),
