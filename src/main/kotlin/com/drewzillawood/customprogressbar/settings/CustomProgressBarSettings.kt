@@ -16,9 +16,7 @@ class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSett
 
     var isAdvancedOptionsEnabled: Boolean = false
     var cycleTime: Int = 800
-    var cycleDemoTime: Int = 800
     var repaintInterval: Int = 50
-    var repaintDemoInterval: Int = 50
 
     @Nullable
     override fun getState() = this

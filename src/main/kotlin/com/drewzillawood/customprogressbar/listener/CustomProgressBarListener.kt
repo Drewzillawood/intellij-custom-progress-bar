@@ -17,6 +17,10 @@ class CustomProgressBarListener : LafManagerListener, DynamicPluginListener, App
     private lateinit var previousProgressBar: Any
     private lateinit var pluginId: PluginId
 
+    init {
+        updateProgressBarUi()
+    }
+
     override fun lookAndFeelChanged(source: LafManager) {
         updateProgressBarUi()
     }
