@@ -1,22 +1,22 @@
 package com.drewzillawood.customprogressbar.data
 
-import com.drewzillawood.customprogressbar.data.model.PersistentDemoConfigs
+import com.drewzillawood.customprogressbar.data.model.PersistentConfigs
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 
 @State(name = "PersistentDemoConfigs", storages = [Storage("PersistentDemoConfigs.xml")])
-class PersistentDemoConfigServiceImpl : PersistentStateComponent<PersistentDemoConfigs>, PersistentDemoConfigService {
+class PersistentDemoConfigServiceImpl : PersistentStateComponent<PersistentConfigs>, PersistentDemoConfigService {
 
-  private var state: PersistentDemoConfigs = PersistentDemoConfigs()
+  private var state: PersistentConfigs = PersistentConfigs()
 
-  override fun getState(): PersistentDemoConfigs = state
+  override fun getState(): PersistentConfigs = state
 
-  override fun loadState(state: PersistentDemoConfigs) {
+  override fun loadState(state: PersistentConfigs) {
     this.state = state
   }
 
-  override fun save(configs: PersistentDemoConfigs) {
+  override fun save(configs: PersistentConfigs) {
     with(state) {
       myIndeterminatePrimaryColor = configs.myIndeterminatePrimaryColor
       myIndeterminateSecondaryColor = configs.myIndeterminateSecondaryColor
@@ -25,5 +25,5 @@ class PersistentDemoConfigServiceImpl : PersistentStateComponent<PersistentDemoC
     }
   }
 
-  override fun read(): PersistentDemoConfigs = state
+  override fun read(): PersistentConfigs = state
 }
