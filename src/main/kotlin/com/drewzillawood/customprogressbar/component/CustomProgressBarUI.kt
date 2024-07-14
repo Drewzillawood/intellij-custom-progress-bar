@@ -1,7 +1,6 @@
 package com.drewzillawood.customprogressbar.component
 
 import com.drewzillawood.customprogressbar.domain.GetConfigUseCase
-import com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings
 import com.intellij.ide.ui.laf.darcula.ui.DarculaProgressBarUI
 import com.intellij.openapi.components.service
 import com.intellij.ui.scale.JBUIScale
@@ -29,28 +28,22 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
 
     private val DEFAULT_WIDTH = 4
 
-    private val settings = CustomProgressBarSettings.getInstance()
     private val getConfig = service<GetConfigUseCase>()
     private var current = getConfig()
 
     override fun updateIndeterminateAnimationIndex(startMillis: Long) {
-        val numFrames = settings.cycleTime / settings.repaintInterval
+        val numFrames = current.cycleTime / current.repaintInterval
         val timePassed = System.currentTimeMillis() - startMillis
-        this.animationIndex = (timePassed / settings.repaintInterval.toLong() % numFrames.toLong()).toInt()
+        this.animationIndex = (timePassed / current.repaintInterval.toLong() % numFrames.toLong()).toInt()
     }
 
     override fun installDefaults() {
         super.installDefaults()
-        UIManager.put("ProgressBar.repaintInterval", settings.repaintInterval)
-        UIManager.put("ProgressBar.cycleTime", settings.cycleTime)
+        UIManager.put("ProgressBar.repaintInterval", current.repaintInterval)
+        UIManager.put("ProgressBar.cycleTime", current.cycleTime)
     }
 
     override fun paintIndeterminate(g: Graphics?, c: JComponent?) {
-        if (!settings.isCustomProgressBarEnabled) {
-            super.paintIndeterminate(g, c)
-            return
-        }
-
         val g2 = g?.create() as Graphics2D
         try {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
@@ -195,10 +188,6 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     override fun paintDeterminate(g: Graphics?, c: JComponent?) {
-        if(!settings.isCustomProgressBarEnabled) {
-            super.paintDeterminate(g, c)
-            return
-        }
         val g2 = g?.create() as Graphics2D
         try {
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)

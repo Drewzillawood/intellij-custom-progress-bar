@@ -1,26 +1,24 @@
 package com.drewzillawood.customprogressbar.component
 
 import com.drewzillawood.customprogressbar.domain.GetDemoConfigUseCase
-import com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings
 import com.intellij.openapi.components.service
 import java.awt.Color
 import javax.swing.UIManager
 
 open class CustomProgressBarDemoUI : CustomProgressBarUI() {
 
-    private val settings = CustomProgressBarSettings.getInstance()
     private var currentDemo = service<GetDemoConfigUseCase>().invoke()
 
     override fun updateIndeterminateAnimationIndex(startMillis: Long) {
-        val numFrames = settings.cycleDemoTime / settings.repaintDemoInterval
+        val numFrames = currentDemo.cycleTime / currentDemo.repaintInterval
         val timePassed = System.currentTimeMillis() - startMillis
-        this.animationIndex = (timePassed / settings.repaintDemoInterval.toLong() % numFrames.toLong()).toInt()
+        this.animationIndex = (timePassed / currentDemo.repaintInterval.toLong() % numFrames.toLong()).toInt()
     }
 
     override fun installDefaults() {
         super.installDefaults()
-        UIManager.put("ProgressBar.repaintInterval", settings.repaintDemoInterval)
-        UIManager.put("ProgressBar.cycleTime", settings.cycleDemoTime)
+        UIManager.put("ProgressBar.repaintInterval", currentDemo.repaintInterval)
+        UIManager.put("ProgressBar.cycleTime", currentDemo.cycleTime)
     }
 
     override fun getIndeterminateSecondaryColor(): Color {

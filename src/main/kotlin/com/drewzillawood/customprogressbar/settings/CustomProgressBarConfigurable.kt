@@ -54,7 +54,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     override val coroutineContext = CoroutineScope(Job()).coroutineContext
 
     private lateinit var panel: DialogPanel
-    private lateinit var enabledCustomProgressBar: JCheckBox
     private lateinit var myIndeterminatePrimaryColorChooser: ColorPanel
     private lateinit var myIndeterminateSecondaryColorChooser: ColorPanel
     private lateinit var myDeterminatePrimaryColorChooser: ColorPanel
@@ -78,16 +77,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     override fun createComponent(): JComponent {
         panel = panel {
-            row {
-                enabledCustomProgressBar = checkBox("Enable Custom Progress Bar:")
-                    .bindSelected(settings::isCustomProgressBarEnabled)
-                    .component
-                enabledCustomProgressBar.addChangeListener {
-                    if (enabledCustomProgressBar.isSelected.not()) {
-                        advancedOptionsCheckBox.isSelected = false
-                    }
-                }
-            }
             group("Indeterminate") {
                 panel {
                     row {
@@ -113,9 +102,11 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                     }
                     row {
                         advancedOptionsCheckBox = checkBox("Advanced")
-                            .bindSelected(settings::isAdvancedOptionsEnabled)
+                            .bindSelected(currentDemo::isAdvancedOptionsEnabled)
                             .component
                         advancedOptionsCheckBox.addChangeListener {
+                            currentDemo.isAdvancedOptionsEnabled = advancedOptionsCheckBox.isSelected
+                            saveDemoConfig(currentDemo)
                             if (advancedOptionsCheckBox.isSelected.not()) {
                                 cycleTimeSlider.value = CYCLE_TIME_DEFAULT
                                 repaintIntervalSlider.value = REPAINT_INTERVAL_DEFAULT
@@ -125,25 +116,27 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                     indent {
                         row("Cycle Time (ms):") {
                             cycleTimeSlider = slider(0, 2000, 250, 500)
-                                .bindValue(settings::cycleTime)
+                                .bindValue(currentDemo::cycleTime)
                                 .component
                             cycleTimeSlider.addChangeListener {
-                                settings.cycleDemoTime = cycleTimeSlider.value
+                                currentDemo.cycleTime = cycleTimeSlider.value
                                 indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
+                                saveDemoConfig(currentDemo)
                             }
                         }
                         row("Repaint Interval (ms):") {
                             repaintIntervalSlider = slider(0, 200, 25, 50)
-                                .bindValue(settings::repaintInterval)
+                                .bindValue(currentDemo::repaintInterval)
                                 .component
                             repaintIntervalSlider.addChangeListener {
-                                settings.repaintDemoInterval = repaintIntervalSlider.value
+                                currentDemo.repaintInterval = repaintIntervalSlider.value
                                 indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
+                                saveDemoConfig(currentDemo)
                             }
                         }
                     }.visibleIf(advancedOptionsCheckBox.selected)
                 }
-            }.visibleIf(enabledCustomProgressBar.selected)
+            }
             group("Determinate") {
                 panel {
                     row {
@@ -168,7 +161,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         cell(determinateExampleProgressBar)
                     }
                 }
-            }.visibleIf(enabledCustomProgressBar.selected)
+            }
             row {
                 textFieldWithBrowseButton(null, null, FileChooserDescriptorFactory.createSingleFileDescriptor(), null)
             }
@@ -195,11 +188,11 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     }
 
     override fun isModified(): Boolean {
-        return currentDemo != current
+        return currentDemo != initial
     }
 
     override fun reset() {
-        saveDemoConfig(current)
+        saveDemoConfig(initial)
         currentDemo = getDemoConfig()
         panel.reset()
         super.reset()
