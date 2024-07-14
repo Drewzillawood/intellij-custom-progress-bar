@@ -9,7 +9,6 @@ data class PersistentConfigs(@Transient var map: MutableMap<String, Any> = defau
   var myIndeterminateSecondaryColor: Int by map
   var myDeterminatePrimaryColor: Int by map
   var myDeterminateSecondaryColor: Int by map
-  var isCustomProgressBarEnabled: Boolean by map
   var isAdvancedOptionsEnabled: Boolean by map
   var cycleTime: Int by map
   var repaintInterval: Int by map
