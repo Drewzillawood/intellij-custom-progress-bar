@@ -123,10 +123,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                     indent {
                         row("Cycle Time (ms):") {
                             cycleTimeSlider = slider(0, 2000, 250, 500)
-                                .bindValue(
-                                    settings::cycleTime,
-                                    settings::cycleTime::set
-                                )
+                                .bindValue(settings::cycleTime)
                                 .component
                             cycleTimeSlider.addChangeListener {
                                 settings.cycleDemoTime = cycleTimeSlider.value
@@ -135,10 +132,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         }
                         row("Repaint Interval (ms):") {
                             repaintIntervalSlider = slider(0, 200, 25, 50)
-                                .bindValue(
-                                    settings::repaintInterval,
-                                    settings::repaintInterval::set
-                                )
+                                .bindValue(settings::repaintInterval)
                                 .component
                             repaintIntervalSlider.addChangeListener {
                                 settings.repaintDemoInterval = repaintIntervalSlider.value
