@@ -10,15 +10,7 @@ import org.jetbrains.annotations.Nullable
 @State(name = "CustomProgressBarSettings", storages = [(Storage("Custom-ProgressBar-Settings.xml"))])
 class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSettings> {
 
-    var isCustomProgressBarEnabled: Boolean = true
-
     var version: String = ""
-
-    var isAdvancedOptionsEnabled: Boolean = false
-    var cycleTime: Int = 800
-    var cycleDemoTime: Int = 800
-    var repaintInterval: Int = 50
-    var repaintDemoInterval: Int = 50
 
     @Nullable
     override fun getState() = this
