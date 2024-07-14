@@ -7,10 +7,7 @@ import com.intellij.openapi.components.service
 @Service
 class GetDemoConfigUseCase {
 
-  operator fun invoke() = configService().read()
+  private val configService = service<PersistentDemoConfigService>()
 
-  companion object {
-    @JvmStatic
-    fun configService() = service<PersistentDemoConfigService>()
-  }
+  operator fun invoke() = configService.read()
 }

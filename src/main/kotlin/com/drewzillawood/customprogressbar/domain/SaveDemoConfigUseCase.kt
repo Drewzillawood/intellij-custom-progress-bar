@@ -8,10 +8,7 @@ import com.intellij.openapi.components.service
 @Service
 class SaveDemoConfigUseCase {
 
-  operator fun invoke(configs: PersistentConfigs) = configService().save(configs)
+  private val configService = service<PersistentDemoConfigService>()
 
-  companion object {
-    @JvmStatic
-    fun configService() = service<PersistentDemoConfigService>()
-  }
+  operator fun invoke(configs: PersistentConfigs) = configService.save(configs)
 }

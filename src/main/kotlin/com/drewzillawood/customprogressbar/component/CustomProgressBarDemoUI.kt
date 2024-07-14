@@ -2,14 +2,14 @@ package com.drewzillawood.customprogressbar.component
 
 import com.drewzillawood.customprogressbar.domain.GetDemoConfigUseCase
 import com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings
+import com.intellij.openapi.components.service
 import java.awt.Color
 import javax.swing.UIManager
 
 open class CustomProgressBarDemoUI : CustomProgressBarUI() {
 
     private val settings = CustomProgressBarSettings.getInstance()
-    private val getDemoConfig = GetDemoConfigUseCase.configService()
-    private var currentDemo = getDemoConfig.read()
+    private var currentDemo = service<GetDemoConfigUseCase>().invoke()
 
     override fun updateIndeterminateAnimationIndex(startMillis: Long) {
         val numFrames = settings.cycleDemoTime / settings.repaintDemoInterval
