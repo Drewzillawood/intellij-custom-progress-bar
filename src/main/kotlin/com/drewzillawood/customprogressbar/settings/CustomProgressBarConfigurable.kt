@@ -1,7 +1,6 @@
 package com.drewzillawood.customprogressbar.settings
 
 import com.drewzillawood.customprogressbar.component.CustomProgressBarDemoUI
-import com.drewzillawood.customprogressbar.data.model.PersistentConfigs
 import com.drewzillawood.customprogressbar.domain.GetConfigUseCase
 import com.drewzillawood.customprogressbar.domain.GetDemoConfigUseCase
 import com.drewzillawood.customprogressbar.domain.SaveConfigUseCase
@@ -193,30 +192,26 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     }
 
     override fun isModified(): Boolean {
-        return currentDemo != initial
-                || advancedOptionsCheckBox.isSelected != settings.isAdvancedOptionsEnabled
-                || cycleTimeSlider.value != settings.cycleTime
-                || repaintIntervalSlider.value != settings.repaintInterval
-                || panel.isModified()
+        return currentDemo != current
     }
 
     override fun reset() {
-        val settings = CustomProgressBarSettings.getInstance()
+        currentDemo.isCustomProgressBarEnabled = current.isCustomProgressBarEnabled
         currentDemo.myIndeterminatePrimaryColor = current.myIndeterminatePrimaryColor
         currentDemo.myIndeterminateSecondaryColor = current.myIndeterminateSecondaryColor
         currentDemo.myDeterminatePrimaryColor = current.myDeterminatePrimaryColor
         currentDemo.myDeterminateSecondaryColor = current.myDeterminateSecondaryColor
-        settings.cycleDemoTime = settings.cycleTime
-        settings.repaintDemoInterval = settings.repaintInterval
-
-        enabledCustomProgressBar.isSelected = settings.isCustomProgressBarEnabled
+        currentDemo.isAdvancedOptionsEnabled = current.isAdvancedOptionsEnabled
+        currentDemo.cycleTime = current.cycleTime
+        currentDemo.repaintInterval = current.repaintInterval
+        enabledCustomProgressBar.isSelected = current.isCustomProgressBarEnabled
         myIndeterminatePrimaryColorChooser.selectedColor = Color(current.myIndeterminatePrimaryColor)
         myIndeterminateSecondaryColorChooser.selectedColor = Color(current.myIndeterminateSecondaryColor)
         myDeterminatePrimaryColorChooser.selectedColor = Color(current.myDeterminatePrimaryColor)
         myDeterminateSecondaryColorChooser.selectedColor = Color(current.myDeterminateSecondaryColor)
-        advancedOptionsCheckBox.isSelected = settings.isAdvancedOptionsEnabled
-        cycleTimeSlider.value = settings.cycleTime
-        repaintIntervalSlider.value = settings.repaintInterval
+        advancedOptionsCheckBox.isSelected = current.isAdvancedOptionsEnabled
+        cycleTimeSlider.value = current.cycleTime
+        repaintIntervalSlider.value = current.repaintInterval
         super.reset()
     }
 
@@ -227,23 +222,9 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     @Throws(ConfigurationException::class)
     override fun apply() {
-        val settings = CustomProgressBarSettings.getInstance()
-        settings.isCustomProgressBarEnabled = enabledCustomProgressBar.isSelected
-
-        saveConfig(PersistentConfigs(
-            myIndeterminatePrimaryColorChooser.selectedColor!!.rgb,
-            myIndeterminateSecondaryColorChooser.selectedColor!!.rgb,
-            myDeterminatePrimaryColorChooser.selectedColor!!.rgb,
-            myDeterminateSecondaryColorChooser.selectedColor!!.rgb
-        ))
+        saveConfig(currentDemo)
         initial = getConfig()
         current = initial.copy()
-
-        settings.isAdvancedOptionsEnabled = advancedOptionsCheckBox.isSelected
-        settings.cycleTime = cycleTimeSlider.value
-        settings.cycleDemoTime = settings.cycleTime
-        settings.repaintInterval = repaintIntervalSlider.value
-        settings.repaintDemoInterval = settings.repaintInterval
         panel.apply()
     }
 

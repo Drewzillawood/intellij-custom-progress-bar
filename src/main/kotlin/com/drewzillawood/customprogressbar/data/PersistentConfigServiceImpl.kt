@@ -22,6 +22,10 @@ class PersistentConfigServiceImpl : PersistentStateComponent<PersistentConfigs>,
       myIndeterminateSecondaryColor = configs.myIndeterminateSecondaryColor
       myDeterminatePrimaryColor = configs.myDeterminatePrimaryColor
       myDeterminateSecondaryColor = configs.myDeterminateSecondaryColor
+      isCustomProgressBarEnabled = configs.isCustomProgressBarEnabled
+      isAdvancedOptionsEnabled = configs.isAdvancedOptionsEnabled
+      cycleTime = configs.cycleTime
+      repaintInterval = configs.repaintInterval
     }
   }
 
