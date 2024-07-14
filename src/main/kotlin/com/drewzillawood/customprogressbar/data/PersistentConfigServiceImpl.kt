@@ -17,15 +17,8 @@ class PersistentConfigServiceImpl : PersistentStateComponent<PersistentConfigs>,
   }
 
   override fun save(configs: PersistentConfigs) {
-    with(state) {
-      myIndeterminatePrimaryColor = configs.myIndeterminatePrimaryColor
-      myIndeterminateSecondaryColor = configs.myIndeterminateSecondaryColor
-      myDeterminatePrimaryColor = configs.myDeterminatePrimaryColor
-      myDeterminateSecondaryColor = configs.myDeterminateSecondaryColor
-      isCustomProgressBarEnabled = configs.isCustomProgressBarEnabled
-      isAdvancedOptionsEnabled = configs.isAdvancedOptionsEnabled
-      cycleTime = configs.cycleTime
-      repaintInterval = configs.repaintInterval
+    state.map.entries.zip(configs.map.entries).forEach {
+      it.first.setValue(it.second.value)
     }
   }
 
