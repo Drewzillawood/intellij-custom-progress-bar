@@ -6,7 +6,7 @@ import java.awt.Color
 private val DEFAULT_PRIMARY_BLUE = Color(64, 115, 213)
 private val DEFAULT_SECONDARY_BLUE = Color(100, 148, 243)
 
-data class PersistentConfigs(
+data class PersistentDemoConfigs(
   var myIndeterminatePrimaryColor: Int = DEFAULT_PRIMARY_BLUE.rgb,
   var myIndeterminateSecondaryColor: Int = DEFAULT_SECONDARY_BLUE.rgb,
   var myDeterminatePrimaryColor: Int = DEFAULT_PRIMARY_BLUE.rgb,

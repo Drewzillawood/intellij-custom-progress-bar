@@ -1,16 +1,16 @@
 package com.drewzillawood.customprogressbar.domain
 
-import com.drewzillawood.customprogressbar.data.PersistentConfigService
+import com.drewzillawood.customprogressbar.data.PersistentDemoConfigService
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 
 @Service
-class GetConfigUseCase {
+class GetDemoConfigUseCase {
 
   operator fun invoke() = configService().read()
 
   companion object {
     @JvmStatic
-    fun configService() = service<PersistentConfigService>()
+    fun configService() = service<PersistentDemoConfigService>()
   }
 }
