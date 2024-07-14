@@ -62,8 +62,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     private lateinit var cycleTimeSlider: JSlider
     private lateinit var repaintIntervalSlider: JSlider
 
-    private var settings = CustomProgressBarSettings.getInstance()
-
     init {
         indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
         indeterminateExampleProgressBar.isIndeterminate = true
