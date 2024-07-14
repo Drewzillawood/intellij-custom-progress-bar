@@ -6,6 +6,7 @@ import com.drewzillawood.customprogressbar.domain.GetConfigUseCase
 import com.drewzillawood.customprogressbar.domain.GetDemoConfigUseCase
 import com.drewzillawood.customprogressbar.domain.SaveConfigUseCase
 import com.drewzillawood.customprogressbar.domain.SaveDemoConfigUseCase
+import com.intellij.openapi.components.service
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SearchableConfigurable
@@ -35,14 +36,18 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     private val CYCLE_TIME_DEFAULT = 800
     private val REPAINT_INTERVAL_DEFAULT = 50
 
-    private val getConfig = GetConfigUseCase.configService()
-    private val saveConfig = SaveConfigUseCase.configService()
-    private var initial = getConfig.read()
+//    var test: PersistentConfigs by Delegates.observable(GetConfigUseCase.configService().read()) {
+//        prop, old, new -> println("")
+//    }
+
+    private val getConfig = service<GetConfigUseCase>()
+    private val saveConfig = service<SaveConfigUseCase>()
+    private var initial = getConfig()
     private var current = initial.copy()
 
-    private val getDemoConfig = GetDemoConfigUseCase.configService()
-    private val saveDemoConfig = SaveDemoConfigUseCase.configService()
-    private var currentDemo = getDemoConfig.read()
+    private val getDemoConfig = service<GetDemoConfigUseCase>()
+    private val saveDemoConfig = service<SaveDemoConfigUseCase>()
+    private var currentDemo = getDemoConfig()
 
     private val indeterminateExampleProgressBar = JProgressBar()
     private val determinateExampleProgressBar = JProgressBar()
@@ -90,18 +95,18 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         panel {
                             row("Primary:") {
                                 myIndeterminatePrimaryColorChooser = ColorPanel()
-                                cell(myIndeterminatePrimaryColorChooser).bindColor(current::myIndeterminatePrimaryColor)
+                                cell(myIndeterminatePrimaryColorChooser)//.bindColor(currentDemo::myIndeterminatePrimaryColor)
                                 myIndeterminatePrimaryColorChooser.addActionListener {
                                     currentDemo.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
-                                    saveDemoConfig.save(currentDemo)
+                                    saveDemoConfig(currentDemo)
                                 }
                             }.resizableRow()
                             row("Secondary:") {
                                 myIndeterminateSecondaryColorChooser = ColorPanel()
-                                cell(myIndeterminateSecondaryColorChooser).bindColor(current::myIndeterminateSecondaryColor)
+                                cell(myIndeterminateSecondaryColorChooser)//.bindColor(currentDemo::myIndeterminateSecondaryColor)
                                 myIndeterminateSecondaryColorChooser.addActionListener {
                                     currentDemo.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
-                                    saveDemoConfig.save(currentDemo)
+                                    saveDemoConfig(currentDemo)
                                 }
                             }.resizableRow()
                         }
@@ -152,19 +157,18 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         panel {
                             row("Primary:") {
                                 myDeterminatePrimaryColorChooser = ColorPanel()
-                                cell(myDeterminatePrimaryColorChooser).bindColor(current::myDeterminatePrimaryColor)
+                                cell(myDeterminatePrimaryColorChooser)//.bindColor(currentDemo::myDeterminatePrimaryColor)
                                 myDeterminatePrimaryColorChooser.addActionListener {
                                     currentDemo.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
-                                    saveDemoConfig.save(currentDemo)
+                                    saveDemoConfig(currentDemo)
                                 }
                             }
                             row("Secondary:") {
                                 myDeterminateSecondaryColorChooser = ColorPanel()
-                                cell(myDeterminateSecondaryColorChooser).bindColor(current::myDeterminateSecondaryColor)
+                                cell(myDeterminateSecondaryColorChooser)//.bindColor(currentDemo::myDeterminateSecondaryColor)
                                 myDeterminateSecondaryColorChooser.addActionListener {
-                                    currentDemo.myDeterminateSecondaryColor =
-                                        myDeterminateSecondaryColorChooser.selectedColor!!.rgb
-                                    saveDemoConfig.save(currentDemo)
+                                    currentDemo.myDeterminateSecondaryColor = myDeterminateSecondaryColorChooser.selectedColor!!.rgb
+                                    saveDemoConfig(currentDemo)
                                 }
                             }
                         }
@@ -238,13 +242,13 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
         val settings = CustomProgressBarSettings.getInstance()
         settings.isCustomProgressBarEnabled = enabledCustomProgressBar.isSelected
 
-        saveConfig.save(PersistentConfigs(
+        saveConfig(PersistentConfigs(
             myIndeterminatePrimaryColorChooser.selectedColor!!.rgb,
             myIndeterminateSecondaryColorChooser.selectedColor!!.rgb,
             myDeterminatePrimaryColorChooser.selectedColor!!.rgb,
             myDeterminateSecondaryColorChooser.selectedColor!!.rgb
         ))
-        initial = getConfig.read()
+        initial = getConfig()
         current = initial.copy()
 
         settings.isAdvancedOptionsEnabled = advancedOptionsCheckBox.isSelected
