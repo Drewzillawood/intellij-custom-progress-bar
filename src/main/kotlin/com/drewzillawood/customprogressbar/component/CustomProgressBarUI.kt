@@ -1,8 +1,8 @@
 package com.drewzillawood.customprogressbar.component
 
 import com.drewzillawood.customprogressbar.domain.GetConfigUseCase
-import com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings
 import com.intellij.ide.ui.laf.darcula.ui.DarculaProgressBarUI
+import com.intellij.openapi.components.service
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.ui.JBInsets
 import com.intellij.util.ui.UIUtilities
@@ -28,24 +28,23 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
 
     private val DEFAULT_WIDTH = 4
 
-    private val settings = CustomProgressBarSettings.getInstance()
-    private val getConfig = GetConfigUseCase.configService()
-    private var current = getConfig.read()
+    private val getConfig = service<GetConfigUseCase>()
+    private var current = getConfig()
 
     override fun updateIndeterminateAnimationIndex(startMillis: Long) {
-        val numFrames = settings.cycleTime / settings.repaintInterval
+        val numFrames = current.cycleTime / current.repaintInterval
         val timePassed = System.currentTimeMillis() - startMillis
-        this.animationIndex = (timePassed / settings.repaintInterval.toLong() % numFrames.toLong()).toInt()
+        this.animationIndex = (timePassed / current.repaintInterval.toLong() % numFrames.toLong()).toInt()
     }
 
     override fun installDefaults() {
         super.installDefaults()
-        UIManager.put("ProgressBar.repaintInterval", settings.repaintInterval)
-        UIManager.put("ProgressBar.cycleTime", settings.cycleTime)
+        UIManager.put("ProgressBar.repaintInterval", current.repaintInterval)
+        UIManager.put("ProgressBar.cycleTime", current.cycleTime)
     }
 
     override fun paintIndeterminate(g: Graphics?, c: JComponent?) {
-        if (!settings.isCustomProgressBarEnabled) {
+        if (!current.isCustomProgressBarEnabled) {
             super.paintIndeterminate(g, c)
             return
         }
@@ -194,7 +193,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
 
     override fun paintDeterminate(g: Graphics?, c: JComponent?) {
-        if(!settings.isCustomProgressBarEnabled) {
+        if(!current.isCustomProgressBarEnabled) {
             super.paintDeterminate(g, c)
             return
         }
