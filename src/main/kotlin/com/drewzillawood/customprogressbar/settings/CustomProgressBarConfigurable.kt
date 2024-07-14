@@ -11,9 +11,11 @@ import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.ui.ColorPanel
+import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.bindValue
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.toMutableProperty
 import com.intellij.ui.layout.selected
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -26,6 +28,7 @@ import javax.swing.JCheckBox
 import javax.swing.JComponent
 import javax.swing.JProgressBar
 import javax.swing.JSlider
+import kotlin.reflect.KMutableProperty0
 
 class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
@@ -87,11 +90,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         panel {
                             row("Primary:") {
                                 myIndeterminatePrimaryColorChooser = ColorPanel()
-                                cell(myIndeterminatePrimaryColorChooser)
-                                myIndeterminatePrimaryColorChooser.bindColor(
-                                    current::myIndeterminatePrimaryColor,
-                                    current::myIndeterminatePrimaryColor::set
-                                )
+                                cell(myIndeterminatePrimaryColorChooser).bindColor(current::myIndeterminatePrimaryColor)
                                 myIndeterminatePrimaryColorChooser.addActionListener {
                                     currentDemo.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
                                     saveDemoConfig.save(currentDemo)
@@ -99,11 +98,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                             }.resizableRow()
                             row("Secondary:") {
                                 myIndeterminateSecondaryColorChooser = ColorPanel()
-                                cell(myIndeterminateSecondaryColorChooser)
-                                myIndeterminateSecondaryColorChooser.bindColor(
-                                    current::myIndeterminateSecondaryColor,
-                                    current::myIndeterminateSecondaryColor::set
-                                )
+                                cell(myIndeterminateSecondaryColorChooser).bindColor(current::myIndeterminateSecondaryColor)
                                 myIndeterminateSecondaryColorChooser.addActionListener {
                                     currentDemo.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
                                     saveDemoConfig.save(currentDemo)
@@ -157,11 +152,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         panel {
                             row("Primary:") {
                                 myDeterminatePrimaryColorChooser = ColorPanel()
-                                cell(myDeterminatePrimaryColorChooser)
-                                myDeterminatePrimaryColorChooser.bindColor(
-                                    current::myDeterminatePrimaryColor,
-                                    current::myDeterminatePrimaryColor::set
-                                )
+                                cell(myDeterminatePrimaryColorChooser).bindColor(current::myDeterminatePrimaryColor)
                                 myDeterminatePrimaryColorChooser.addActionListener {
                                     currentDemo.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
                                     saveDemoConfig.save(currentDemo)
@@ -169,11 +160,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                             }
                             row("Secondary:") {
                                 myDeterminateSecondaryColorChooser = ColorPanel()
-                                cell(myDeterminateSecondaryColorChooser)
-                                myDeterminateSecondaryColorChooser.bindColor(
-                                    current::myDeterminateSecondaryColor,
-                                    current::myDeterminateSecondaryColor::set
-                                )
+                                cell(myDeterminateSecondaryColorChooser).bindColor(current::myDeterminateSecondaryColor)
                                 myDeterminateSecondaryColorChooser.addActionListener {
                                     currentDemo.myDeterminateSecondaryColor =
                                         myDeterminateSecondaryColorChooser.selectedColor!!.rgb
@@ -277,10 +264,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     }
 }
 
-fun ColorPanel.bindColor(getter: () -> Int?, setter: (Int) -> Unit) {
-    getter()?.let { rgbValue ->
-        val color = Color(rgbValue)
-        this.selectedColor = color
-        setter(rgbValue)
-    }
+fun <T : ColorPanel> Cell<T>.bindColor(prop: KMutableProperty0<Int>): Cell<T> {
+    return bind(
+        { colorPanel -> colorPanel.selectedColor!!.rgb },
+        { colorPanel, propColor -> colorPanel.selectedColor = Color(propColor) },
+        prop.toMutableProperty()
+    )
 }
