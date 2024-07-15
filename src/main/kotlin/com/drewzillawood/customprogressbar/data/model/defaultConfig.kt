@@ -14,7 +14,6 @@ fun defaultPersistentConfigsMap(): MutableMap<String, Any> = mutableMapOf(
   "myIndeterminateSecondaryColor" to DEFAULT_SECONDARY_BLUE.rgb,
   "myDeterminatePrimaryColor" to DEFAULT_PRIMARY_BLUE.rgb,
   "myDeterminateSecondaryColor" to JBColor.GRAY.rgb,
-  "isCustomProgressBarEnabled" to true,
   "isAdvancedOptionsEnabled" to false,
   "cycleTime" to CYCLE_TIME_DEFAULT,
   "repaintInterval" to REPAINT_INTERVAL_DEFAULT
