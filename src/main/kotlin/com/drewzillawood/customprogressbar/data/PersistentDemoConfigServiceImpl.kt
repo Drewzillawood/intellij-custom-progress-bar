@@ -24,5 +24,5 @@ class PersistentDemoConfigServiceImpl : PersistentStateComponent<PersistentConfi
     }
   }
 
-  override fun read(): PersistentConfigs = state
+  override fun read(): PersistentConfigs = PersistentConfigs(state)
 }

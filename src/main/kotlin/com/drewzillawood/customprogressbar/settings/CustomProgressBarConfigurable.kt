@@ -1,10 +1,9 @@
 package com.drewzillawood.customprogressbar.settings
 
-import com.drewzillawood.customprogressbar.component.CustomProgressBarDemoUI
+import com.drewzillawood.customprogressbar.component.CustomProgressBarUI
+import com.drewzillawood.customprogressbar.data.model.PersistentConfigs
 import com.drewzillawood.customprogressbar.domain.GetConfigUseCase
-import com.drewzillawood.customprogressbar.domain.GetDemoConfigUseCase
 import com.drewzillawood.customprogressbar.domain.SaveConfigUseCase
-import com.drewzillawood.customprogressbar.domain.SaveDemoConfigUseCase
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
@@ -41,12 +40,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     private val getConfig = service<GetConfigUseCase>()
     private val saveConfig = service<SaveConfigUseCase>()
-    private var initial = getConfig()
-    private var current = initial.copy()
-
-    private val getDemoConfig = service<GetDemoConfigUseCase>()
-    private val saveDemoConfig = service<SaveDemoConfigUseCase>()
-    private var currentDemo = getDemoConfig()
+    private var initial = PersistentConfigs(getConfig())
+    private var current = getConfig()
 
     private val indeterminateExampleProgressBar = JProgressBar()
     private val determinateExampleProgressBar = JProgressBar()
@@ -63,10 +58,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     private lateinit var repaintIntervalSlider: JSlider
 
     init {
-        indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
+        indeterminateExampleProgressBar.setUI(CustomProgressBarUI())
         indeterminateExampleProgressBar.isIndeterminate = true
 
-        determinateExampleProgressBar.setUI(CustomProgressBarDemoUI())
+        determinateExampleProgressBar.setUI(CustomProgressBarUI())
         determinateExampleProgressBar.isIndeterminate = false
         determinateExampleProgressBar.minimum = 0
         determinateExampleProgressBar.maximum = 100
@@ -81,18 +76,18 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         panel {
                             row("Primary:") {
                                 myIndeterminatePrimaryColorChooser = ColorPanel()
-                                cell(myIndeterminatePrimaryColorChooser).bindColor(currentDemo::myIndeterminatePrimaryColor)
+                                cell(myIndeterminatePrimaryColorChooser).bindColor(current::myIndeterminatePrimaryColor)
                                 myIndeterminatePrimaryColorChooser.addActionListener {
-                                    currentDemo.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
-                                    saveDemoConfig(currentDemo)
+                                    current.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
+//                                    saveConfig(current)
                                 }
                             }.resizableRow()
                             row("Secondary:") {
                                 myIndeterminateSecondaryColorChooser = ColorPanel()
-                                cell(myIndeterminateSecondaryColorChooser).bindColor(currentDemo::myIndeterminateSecondaryColor)
+                                cell(myIndeterminateSecondaryColorChooser).bindColor(current::myIndeterminateSecondaryColor)
                                 myIndeterminateSecondaryColorChooser.addActionListener {
-                                    currentDemo.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
-                                    saveDemoConfig(currentDemo)
+                                    current.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
+//                                    saveConfig(current)
                                 }
                             }.resizableRow()
                         }
@@ -100,11 +95,11 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                     }
                     row {
                         advancedOptionsCheckBox = checkBox("Advanced")
-                            .bindSelected(currentDemo::isAdvancedOptionsEnabled)
+                            .bindSelected(current::isAdvancedOptionsEnabled)
                             .component
                         advancedOptionsCheckBox.addChangeListener {
-                            currentDemo.isAdvancedOptionsEnabled = advancedOptionsCheckBox.isSelected
-                            saveDemoConfig(currentDemo)
+                            current.isAdvancedOptionsEnabled = advancedOptionsCheckBox.isSelected
+//                            saveConfig(current)
                             if (advancedOptionsCheckBox.isSelected.not()) {
                                 cycleTimeSlider.value = CYCLE_TIME_DEFAULT
                                 repaintIntervalSlider.value = REPAINT_INTERVAL_DEFAULT
@@ -114,22 +109,22 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                     indent {
                         row("Cycle Time (ms):") {
                             cycleTimeSlider = slider(0, 2000, 250, 500)
-                                .bindValue(currentDemo::cycleTime)
+                                .bindValue(current::cycleTime)
                                 .component
                             cycleTimeSlider.addChangeListener {
-                                currentDemo.cycleTime = cycleTimeSlider.value
-                                indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
-                                saveDemoConfig(currentDemo)
+                                current.cycleTime = cycleTimeSlider.value
+                                indeterminateExampleProgressBar.setUI(CustomProgressBarUI())
+//                                saveConfig(current)
                             }
                         }
                         row("Repaint Interval (ms):") {
                             repaintIntervalSlider = slider(0, 200, 25, 50)
-                                .bindValue(currentDemo::repaintInterval)
+                                .bindValue(current::repaintInterval)
                                 .component
                             repaintIntervalSlider.addChangeListener {
-                                currentDemo.repaintInterval = repaintIntervalSlider.value
-                                indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
-                                saveDemoConfig(currentDemo)
+                                current.repaintInterval = repaintIntervalSlider.value
+                                indeterminateExampleProgressBar.setUI(CustomProgressBarUI())
+//                                saveConfig(current)
                             }
                         }
                     }.visibleIf(advancedOptionsCheckBox.selected)
@@ -141,18 +136,18 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         panel {
                             row("Primary:") {
                                 myDeterminatePrimaryColorChooser = ColorPanel()
-                                cell(myDeterminatePrimaryColorChooser).bindColor(currentDemo::myDeterminatePrimaryColor)
+                                cell(myDeterminatePrimaryColorChooser).bindColor(current::myDeterminatePrimaryColor)
                                 myDeterminatePrimaryColorChooser.addActionListener {
-                                    currentDemo.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
-                                    saveDemoConfig(currentDemo)
+                                    current.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
+//                                    saveConfig(current)
                                 }
                             }
                             row("Secondary:") {
                                 myDeterminateSecondaryColorChooser = ColorPanel()
-                                cell(myDeterminateSecondaryColorChooser).bindColor(currentDemo::myDeterminateSecondaryColor)
+                                cell(myDeterminateSecondaryColorChooser).bindColor(current::myDeterminateSecondaryColor)
                                 myDeterminateSecondaryColorChooser.addActionListener {
-                                    currentDemo.myDeterminateSecondaryColor = myDeterminateSecondaryColorChooser.selectedColor!!.rgb
-                                    saveDemoConfig(currentDemo)
+                                    current.myDeterminateSecondaryColor = myDeterminateSecondaryColorChooser.selectedColor!!.rgb
+//                                    saveConfig(current)
                                 }
                             }
                         }
@@ -186,12 +181,12 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     }
 
     override fun isModified(): Boolean {
-        return currentDemo != initial
+        return current != initial
     }
 
     override fun reset() {
-        saveDemoConfig(initial)
-        currentDemo = getDemoConfig()
+        saveConfig(initial)
+        current = getConfig()
         panel.reset()
         super.reset()
     }
@@ -203,9 +198,9 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     @Throws(ConfigurationException::class)
     override fun apply() {
-        saveConfig(currentDemo)
-        initial = getConfig()
-        current = initial.copy()
+        saveConfig(current)
+        initial = PersistentConfigs(getConfig())
+        current = getConfig()
         panel.apply()
     }
 
