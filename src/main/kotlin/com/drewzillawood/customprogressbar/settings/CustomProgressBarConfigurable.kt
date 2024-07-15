@@ -34,9 +34,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     private val CYCLE_TIME_DEFAULT = 800
     private val REPAINT_INTERVAL_DEFAULT = 50
 
-//    var test: PersistentConfigs by Delegates.observable(GetConfigUseCase.configService().read()) {
-//        prop, old, new -> println("")
-//    }
 
     private val getConfig = service<GetConfigUseCase>()
     private val saveConfig = service<SaveConfigUseCase>()
@@ -79,7 +76,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                                 cell(myIndeterminatePrimaryColorChooser).bindColor(current::myIndeterminatePrimaryColor)
                                 myIndeterminatePrimaryColorChooser.addActionListener {
                                     current.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
-//                                    saveConfig(current)
                                 }
                             }.resizableRow()
                             row("Secondary:") {
@@ -87,7 +83,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                                 cell(myIndeterminateSecondaryColorChooser).bindColor(current::myIndeterminateSecondaryColor)
                                 myIndeterminateSecondaryColorChooser.addActionListener {
                                     current.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
-//                                    saveConfig(current)
                                 }
                             }.resizableRow()
                         }
@@ -99,7 +94,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                             .component
                         advancedOptionsCheckBox.addChangeListener {
                             current.isAdvancedOptionsEnabled = advancedOptionsCheckBox.isSelected
-//                            saveConfig(current)
                             if (advancedOptionsCheckBox.isSelected.not()) {
                                 cycleTimeSlider.value = CYCLE_TIME_DEFAULT
                                 repaintIntervalSlider.value = REPAINT_INTERVAL_DEFAULT
@@ -114,7 +108,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                             cycleTimeSlider.addChangeListener {
                                 current.cycleTime = cycleTimeSlider.value
                                 indeterminateExampleProgressBar.setUI(CustomProgressBarUI())
-//                                saveConfig(current)
                             }
                         }
                         row("Repaint Interval (ms):") {
@@ -124,7 +117,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                             repaintIntervalSlider.addChangeListener {
                                 current.repaintInterval = repaintIntervalSlider.value
                                 indeterminateExampleProgressBar.setUI(CustomProgressBarUI())
-//                                saveConfig(current)
                             }
                         }
                     }.visibleIf(advancedOptionsCheckBox.selected)
@@ -139,7 +131,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                                 cell(myDeterminatePrimaryColorChooser).bindColor(current::myDeterminatePrimaryColor)
                                 myDeterminatePrimaryColorChooser.addActionListener {
                                     current.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
-//                                    saveConfig(current)
                                 }
                             }
                             row("Secondary:") {
@@ -147,7 +138,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                                 cell(myDeterminateSecondaryColorChooser).bindColor(current::myDeterminateSecondaryColor)
                                 myDeterminateSecondaryColorChooser.addActionListener {
                                     current.myDeterminateSecondaryColor = myDeterminateSecondaryColorChooser.selectedColor!!.rgb
-//                                    saveConfig(current)
                                 }
                             }
                         }
