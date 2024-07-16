@@ -1,10 +1,12 @@
 package com.drewzillawood.customprogressbar.data.model
+
 import com.intellij.openapi.components.BaseState
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 
 @Serializable
-data class PersistentConfigs(@Transient var map: MutableMap<String, Any> = defaultPersistentConfigsMap()): BaseState() {
+data class PersistentConfigs(@Transient var map: MutableMap<String, Any> = defaultPersistentConfigsMap()) :
+  BaseState() {
   var myIndeterminatePrimaryColor: Int by map
   var myIndeterminateSecondaryColor: Int by map
   var myDeterminatePrimaryColor: Int by map

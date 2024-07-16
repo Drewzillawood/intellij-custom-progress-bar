@@ -12,37 +12,37 @@ import javax.swing.UIManager
 
 class CustomProgressBarListener : LafManagerListener, DynamicPluginListener, ApplicationActivationListener {
 
-    private val PROGRESS_BAR_UI = "ProgressBarUI"
-    private val CUSTOM_PROGRESS_BAR_UI_NAME = CustomProgressBarUIJava::class.java.name
-    private lateinit var previousProgressBar: Any
-    private lateinit var pluginId: PluginId
+  private val PROGRESS_BAR_UI = "ProgressBarUI"
+  private val CUSTOM_PROGRESS_BAR_UI_NAME = CustomProgressBarUIJava::class.java.name
+  private lateinit var previousProgressBar: Any
+  private lateinit var pluginId: PluginId
 
-    override fun lookAndFeelChanged(source: LafManager) {
-        updateProgressBarUi()
-    }
+  override fun lookAndFeelChanged(source: LafManager) {
+    updateProgressBarUi()
+  }
 
-    override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
-        if (pluginId == pluginDescriptor.pluginId) {
-            updateProgressBarUi()
-        }
+  override fun pluginLoaded(pluginDescriptor: IdeaPluginDescriptor) {
+    if (pluginId == pluginDescriptor.pluginId) {
+      updateProgressBarUi()
     }
+  }
 
-    override fun beforePluginUnload(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
-        if (pluginId == pluginDescriptor.pluginId) {
-            resetProgressBarUi()
-        }
+  override fun beforePluginUnload(pluginDescriptor: IdeaPluginDescriptor, isUpdate: Boolean) {
+    if (pluginId == pluginDescriptor.pluginId) {
+      resetProgressBarUi()
     }
+  }
 
-    override fun applicationActivated(ideFrame: IdeFrame) {
-        updateProgressBarUi()
-    }
+  override fun applicationActivated(ideFrame: IdeFrame) {
+    updateProgressBarUi()
+  }
 
-    private fun updateProgressBarUi() {
-        UIManager.put(PROGRESS_BAR_UI, CUSTOM_PROGRESS_BAR_UI_NAME)
-        UIManager.getDefaults()[CUSTOM_PROGRESS_BAR_UI_NAME] = CustomProgressBarUIJava::class.java
-    }
+  private fun updateProgressBarUi() {
+    UIManager.put(PROGRESS_BAR_UI, CUSTOM_PROGRESS_BAR_UI_NAME)
+    UIManager.getDefaults()[CUSTOM_PROGRESS_BAR_UI_NAME] = CustomProgressBarUIJava::class.java
+  }
 
-    private fun resetProgressBarUi() {
-        UIManager.put(PROGRESS_BAR_UI, previousProgressBar)
-    }
+  private fun resetProgressBarUi() {
+    UIManager.put(PROGRESS_BAR_UI, previousProgressBar)
+  }
 }
