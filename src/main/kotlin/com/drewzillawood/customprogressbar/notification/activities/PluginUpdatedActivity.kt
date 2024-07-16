@@ -19,48 +19,48 @@ import com.intellij.ui.LayeredIcon
 
 class PluginUpdatedActivity : DumbAware {
 
-    override fun runActivity(project: Project) {
-        val pluginDescriptor = PluginManagerCore.getPlugin(PluginId.getId("com.drewzillawood.CustomProgressBar"))
-        val customProgressBarState = CustomProgressBarSettings.getInstance().state
-        if (pluginDescriptor != null) {
-            val installedVersion = pluginDescriptor.version
-            val storedVersion = customProgressBarState.version
-            if (!installedVersion.equals(storedVersion)) {
-                customProgressBarState.version = installedVersion
+  override fun runActivity(project: Project) {
+    val pluginDescriptor = PluginManagerCore.getPlugin(PluginId.getId("com.drewzillawood.CustomProgressBar"))
+    val customProgressBarState = CustomProgressBarSettings.getInstance().state
+    if (pluginDescriptor != null) {
+      val installedVersion = pluginDescriptor.version
+      val storedVersion = customProgressBarState.version
+      if (!installedVersion.equals(storedVersion)) {
+        customProgressBarState.version = installedVersion
 
-                displayUpdateNotification(project, installedVersion)
-            }
-        }
+        displayUpdateNotification(project, installedVersion)
+      }
+    }
+  }
+
+  private fun displayUpdateNotification(project: Project, version: String) {
+    if (!canShowNotification()) {
+      return
     }
 
-    private fun displayUpdateNotification(project: Project, version: String) {
-        if (!canShowNotification()) {
-            return
-        }
-
-        val notification = NotificationGroupManager.getInstance()
-            .getNotificationGroup(CUSTOM_PROGRESS_BAR_UPDATED)
-            .createNotification(
-                "Custom Progress Bar",
-                "Version: $version",
-                NotificationType.INFORMATION,
-            )
-        val originalIcon = IconLoader.getIcon("/META-INF/pluginIcon.svg", javaClass.classLoader)
-        val scaledIcon = LayeredIcon.layeredIcon(arrayOf(originalIcon)).scale(48.0F / originalIcon.iconWidth)
-        notification.icon = scaledIcon
-        notification.addAction(object :
-            DumbAwareAction("Configure...") {
-            override fun actionPerformed(e: AnActionEvent) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(project, CustomProgressBarConfigurable::class.java)
-            }
-        })
-        notification.addAction(object :
-            DumbAwareAction("Don't show again") {
-            override fun actionPerformed(e: AnActionEvent) {
-                setDoNotAskFor(true)
-                notification.hideBalloon()
-            }
-        })
-        notification.notify(project)
-    }
+    val notification = NotificationGroupManager.getInstance()
+      .getNotificationGroup(CUSTOM_PROGRESS_BAR_UPDATED)
+      .createNotification(
+        "Custom Progress Bar",
+        "Version: $version",
+        NotificationType.INFORMATION,
+      )
+    val originalIcon = IconLoader.getIcon("/META-INF/pluginIcon.svg", javaClass.classLoader)
+    val scaledIcon = LayeredIcon.layeredIcon(arrayOf(originalIcon)).scale(48.0F / originalIcon.iconWidth)
+    notification.icon = scaledIcon
+    notification.addAction(object :
+      DumbAwareAction("Configure...") {
+      override fun actionPerformed(e: AnActionEvent) {
+        ShowSettingsUtil.getInstance().showSettingsDialog(project, CustomProgressBarConfigurable::class.java)
+      }
+    })
+    notification.addAction(object :
+      DumbAwareAction("Don't show again") {
+      override fun actionPerformed(e: AnActionEvent) {
+        setDoNotAskFor(true)
+        notification.hideBalloon()
+      }
+    })
+    notification.notify(project)
+  }
 }

@@ -7,33 +7,33 @@ import javax.swing.UIManager
 
 open class CustomProgressBarDemoUI : CustomProgressBarUI() {
 
-    private var currentDemo = service<GetDemoConfigUseCase>().invoke()
+  private var currentDemo = service<GetDemoConfigUseCase>().invoke()
 
-    override fun updateIndeterminateAnimationIndex(startMillis: Long) {
-        val numFrames = currentDemo.cycleTime / currentDemo.repaintInterval
-        val timePassed = System.currentTimeMillis() - startMillis
-        this.animationIndex = (timePassed / currentDemo.repaintInterval.toLong() % numFrames.toLong()).toInt()
-    }
+  override fun updateIndeterminateAnimationIndex(startMillis: Long) {
+    val numFrames = currentDemo.cycleTime / currentDemo.repaintInterval
+    val timePassed = System.currentTimeMillis() - startMillis
+    this.animationIndex = (timePassed / currentDemo.repaintInterval.toLong() % numFrames.toLong()).toInt()
+  }
 
-    override fun installDefaults() {
-        super.installDefaults()
-        UIManager.put("ProgressBar.repaintInterval", currentDemo.repaintInterval)
-        UIManager.put("ProgressBar.cycleTime", currentDemo.cycleTime)
-    }
+  override fun installDefaults() {
+    super.installDefaults()
+    UIManager.put("ProgressBar.repaintInterval", currentDemo.repaintInterval)
+    UIManager.put("ProgressBar.cycleTime", currentDemo.cycleTime)
+  }
 
-    override fun getIndeterminateSecondaryColor(): Color {
-        return Color(currentDemo.myIndeterminateSecondaryColor)
-    }
+  override fun getIndeterminateSecondaryColor(): Color {
+    return Color(currentDemo.myIndeterminateSecondaryColor)
+  }
 
-    override fun getIndeterminatePrimaryColor(): Color {
-        return Color(currentDemo.myIndeterminatePrimaryColor)
-    }
+  override fun getIndeterminatePrimaryColor(): Color {
+    return Color(currentDemo.myIndeterminatePrimaryColor)
+  }
 
-    override fun getDeterminatePrimaryColor(): Color {
-        return Color(currentDemo.myDeterminatePrimaryColor)
-    }
+  override fun getDeterminatePrimaryColor(): Color {
+    return Color(currentDemo.myDeterminatePrimaryColor)
+  }
 
-    override fun getDeterminateSecondaryColor(): Color {
-        return Color(currentDemo.myDeterminateSecondaryColor)
-    }
+  override fun getDeterminateSecondaryColor(): Color {
+    return Color(currentDemo.myDeterminateSecondaryColor)
+  }
 }
