@@ -9,4 +9,3 @@ import com.intellij.openapi.components.Storage
 @Service
 @State(name = "PersistentConfigs", storages = [Storage("PersistentConfigs.xml")])
 class PersistentConfigServiceImpl : SimplePersistentStateComponent<PersistentConfigs>(PersistentConfigs())
-
