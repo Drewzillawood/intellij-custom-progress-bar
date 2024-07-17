@@ -99,8 +99,8 @@
                                  dynamic="false"
                                  displayName="Custom Progress Bar"/>
         <applicationService serviceImplementation="com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings"/>
-        <applicationService serviceImplementation="com.drewzillawood.customprogressbar.data.PersistentConfigServiceImpl"/>
-        <applicationService serviceImplementation="com.drewzillawood.customprogressbar.data.PersistentDemoConfigServiceImpl"/>
+        <applicationService serviceImplementation="com.drewzillawood.customprogressbar.data.PersistentConfigsComponent"/>
+        <applicationService serviceImplementation="com.drewzillawood.customprogressbar.data.PersistentDemoConfigsComponent"/>
         <postStartupActivity implementation="com.drewzillawood.customprogressbar.notification.activities.PluginUpdatedActivity"/>
         <notificationGroup displayType="STICKY_BALLOON" id="Custom Progress Bar updated"/>
     </extensions>
