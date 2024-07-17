@@ -1,9 +1,8 @@
 package com.drewzillawood.customprogressbar.settings
 
-import com.drewzillawood.customprogressbar.component.CustomProgressBarUI
-import com.drewzillawood.customprogressbar.data.model.PersistentConfigs
-import com.drewzillawood.customprogressbar.domain.GetConfigUseCase
-import com.drewzillawood.customprogressbar.domain.SaveConfigUseCase
+import com.drewzillawood.customprogressbar.component.CustomProgressBarDemoUI
+import com.drewzillawood.customprogressbar.data.PersistentConfigServiceImpl
+import com.drewzillawood.customprogressbar.data.PersistentDemoConfigServiceImpl
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
@@ -34,11 +33,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   private val CYCLE_TIME_DEFAULT = 800
   private val REPAINT_INTERVAL_DEFAULT = 50
 
-
-  private val getConfig = service<GetConfigUseCase>()
-  private val saveConfig = service<SaveConfigUseCase>()
-  private var initial = PersistentConfigs(getConfig())
-  private var current = getConfig()
+  private val getConfig = service<PersistentConfigServiceImpl>()
+  private val getDemoConfig = service<PersistentDemoConfigServiceImpl>()
+  private var initial = getConfig.state
+  private var current = getDemoConfig.state
 
   private val indeterminateExampleProgressBar = JProgressBar()
   private val determinateExampleProgressBar = JProgressBar()
@@ -55,10 +53,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   private lateinit var repaintIntervalSlider: JSlider
 
   init {
-    indeterminateExampleProgressBar.setUI(CustomProgressBarUI())
+    indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
     indeterminateExampleProgressBar.isIndeterminate = true
 
-    determinateExampleProgressBar.setUI(CustomProgressBarUI())
+    determinateExampleProgressBar.setUI(CustomProgressBarDemoUI())
     determinateExampleProgressBar.isIndeterminate = false
     determinateExampleProgressBar.minimum = 0
     determinateExampleProgressBar.maximum = 100
@@ -98,6 +96,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                 cycleTimeSlider.value = CYCLE_TIME_DEFAULT
                 repaintIntervalSlider.value = REPAINT_INTERVAL_DEFAULT
               }
+              getDemoConfig.loadState(current)
             }
           }
           indent {
@@ -107,7 +106,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                 .component
               cycleTimeSlider.addChangeListener {
                 current.cycleTime = cycleTimeSlider.value
-                indeterminateExampleProgressBar.setUI(CustomProgressBarUI())
+                getDemoConfig.loadState(current)
+                indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
               }
             }
             row("Repaint Interval (ms):") {
@@ -116,7 +116,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                 .component
               repaintIntervalSlider.addChangeListener {
                 current.repaintInterval = repaintIntervalSlider.value
-                indeterminateExampleProgressBar.setUI(CustomProgressBarUI())
+                getDemoConfig.loadState(current)
+                indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
               }
             }
           }.visibleIf(advancedOptionsCheckBox.selected)
@@ -176,8 +177,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   }
 
   override fun reset() {
-    saveConfig(initial)
-    current = getConfig()
+    getDemoConfig.loadState(initial)
+    current.copyFrom(initial)
     panel.reset()
     super.reset()
   }
@@ -189,9 +190,9 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
   @Throws(ConfigurationException::class)
   override fun apply() {
-    saveConfig(current)
-    initial = PersistentConfigs(getConfig())
-    current = getConfig()
+    getConfig.loadState(current)
+    initial.copyFrom(getConfig.state)
+    current.copyFrom(initial)
     panel.apply()
   }
 

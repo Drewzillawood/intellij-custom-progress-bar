@@ -1,6 +1,6 @@
 package com.drewzillawood.customprogressbar.component
 
-import com.drewzillawood.customprogressbar.domain.GetConfigUseCase
+import com.drewzillawood.customprogressbar.data.PersistentConfigServiceImpl
 import com.intellij.ide.ui.laf.darcula.ui.DarculaProgressBarUI
 import com.intellij.openapi.components.service
 import com.intellij.ui.scale.JBUIScale
@@ -28,8 +28,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
 
   private val DEFAULT_WIDTH = 4
 
-  private val getConfig = service<GetConfigUseCase>()
-  private var current = getConfig()
+  private var current = service<PersistentConfigServiceImpl>().state
 
   override fun updateIndeterminateAnimationIndex(startMillis: Long) {
     val numFrames = current.cycleTime / current.repaintInterval
