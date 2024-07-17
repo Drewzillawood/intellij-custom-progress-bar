@@ -1,8 +1,8 @@
 package com.drewzillawood.customprogressbar.settings
 
 import com.drewzillawood.customprogressbar.component.CustomProgressBarDemoUI
-import com.drewzillawood.customprogressbar.data.PersistentConfigServiceImpl
-import com.drewzillawood.customprogressbar.data.PersistentDemoConfigServiceImpl
+import com.drewzillawood.customprogressbar.data.PersistentConfigsComponent
+import com.drewzillawood.customprogressbar.data.PersistentDemoConfigsComponent
 import com.intellij.openapi.components.service
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
@@ -33,8 +33,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   private val CYCLE_TIME_DEFAULT = 800
   private val REPAINT_INTERVAL_DEFAULT = 50
 
-  private val getConfig = service<PersistentConfigServiceImpl>()
-  private val getDemoConfig = service<PersistentDemoConfigServiceImpl>()
+  private val getConfig = service<PersistentConfigsComponent>()
+  private val getDemoConfig = service<PersistentDemoConfigsComponent>()
   private var initial = getConfig.state
   private var current = getDemoConfig.state
 
