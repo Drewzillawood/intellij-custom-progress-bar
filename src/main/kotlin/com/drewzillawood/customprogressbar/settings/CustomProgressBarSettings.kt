@@ -3,7 +3,6 @@ package com.drewzillawood.customprogressbar.settings
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.openapi.components.service
 import com.intellij.util.xmlb.XmlSerializerUtil
 import org.jetbrains.annotations.Nullable
 
@@ -17,10 +16,5 @@ class CustomProgressBarSettings : PersistentStateComponent<CustomProgressBarSett
 
   override fun loadState(state: CustomProgressBarSettings) {
     XmlSerializerUtil.copyBean(state, this);
-  }
-
-  companion object {
-    @JvmStatic
-    fun getInstance() = service<CustomProgressBarSettings>()
   }
 }

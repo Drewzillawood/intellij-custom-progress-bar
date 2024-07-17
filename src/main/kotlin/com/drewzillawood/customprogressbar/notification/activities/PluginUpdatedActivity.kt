@@ -9,6 +9,7 @@ import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.components.service
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.DumbAwareAction
@@ -21,7 +22,7 @@ class PluginUpdatedActivity : DumbAware {
 
   override fun runActivity(project: Project) {
     val pluginDescriptor = PluginManagerCore.getPlugin(PluginId.getId("com.drewzillawood.CustomProgressBar"))
-    val customProgressBarState = CustomProgressBarSettings.getInstance().state
+    val customProgressBarState = service<CustomProgressBarSettings>().state
     if (pluginDescriptor != null) {
       val installedVersion = pluginDescriptor.version
       val storedVersion = customProgressBarState.version

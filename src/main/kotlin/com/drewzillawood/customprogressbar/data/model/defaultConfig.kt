@@ -3,8 +3,8 @@ package com.drewzillawood.customprogressbar.data.model
 import com.intellij.ui.JBColor
 import java.awt.Color
 
-private const val CYCLE_TIME_DEFAULT = 800
-private const val REPAINT_INTERVAL_DEFAULT = 50
+private const val CYCLE_TIME_DEFAULT: Int = 800
+private const val REPAINT_INTERVAL_DEFAULT: Int = 50
 
 private val DEFAULT_PRIMARY_BLUE = Color(64, 115, 213)
 private val DEFAULT_SECONDARY_BLUE = Color(100, 148, 243)
