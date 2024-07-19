@@ -4,7 +4,6 @@ import com.drewzillawood.customprogressbar.component.CustomProgressBarDemoUI
 import com.drewzillawood.customprogressbar.data.PersistentConfigsComponent
 import com.drewzillawood.customprogressbar.data.PersistentDemoConfigsComponent
 import com.intellij.openapi.components.service
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
@@ -130,9 +129,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
             cell(determinateExampleProgressBar)
           }
         }
-      }
-      row {
-        textFieldWithBrowseButton(null, null, FileChooserDescriptorFactory.createSingleFileDescriptor(), null)
       }
     }
 

@@ -17,8 +17,6 @@ import java.awt.Shape
 import java.awt.geom.AffineTransform
 import java.awt.geom.Rectangle2D
 import java.awt.geom.RoundRectangle2D
-import java.io.File
-import javax.imageio.ImageIO
 import javax.swing.JComponent
 import javax.swing.JProgressBar
 import javax.swing.SwingConstants
@@ -87,9 +85,6 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
           endColor,
           true
         )
-        val image =
-          ImageIO.read(File("C:\\Users\\drew\\IdeaProjects\\CustomProgressBar\\src\\main\\resources\\META-INF\\pluginIcon.svg"))
-//                g2.drawRenderedImage(image, xOffset, yOffset, null)
       } else {
         shape = getShapedRect(
           xOffset.toFloat(),
