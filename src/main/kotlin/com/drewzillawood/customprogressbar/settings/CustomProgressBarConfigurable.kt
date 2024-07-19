@@ -180,8 +180,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   override fun apply() {
     getConfig.loadState(current)
     initial.copyFrom(getConfig.state)
-    current.copyFrom(initial)
     panel.apply()
+    reset()
   }
 
   override fun getDisplayName(): String {
