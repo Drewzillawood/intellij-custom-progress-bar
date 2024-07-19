@@ -1,11 +1,22 @@
 plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.22"
-    id("org.jetbrains.intellij") version "1.17.0"
+    id("org.jetbrains.intellij.platform") version "2.0.0-beta9"
     kotlin("plugin.serialization") version "1.9.20"
 }
 
+val ideaVersion: String by project
+val ideaType: String by project
+
 dependencies {
+    intellijPlatform {
+        create(ideaType, ideaVersion)
+
+        pluginVerifier()
+        zipSigner()
+        instrumentationTools()
+    }
+
     implementation(kotlin("stdlib"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 }
@@ -15,19 +26,26 @@ version = "2.1.4"
 
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    pluginName.set("custom-progress-bars")
+intellijPlatform {
+    pluginConfiguration {
+        name = "custom-progress-bars"
+        ideaVersion {
+            untilBuild.set(provider { null })
+        }
+    }
 
-    version.set("2023.3")
-    type.set("IC") // Target IDE Platform
-
-    plugins.set(listOf(
-        "java"
-    ))
+    verifyPlugin {
+        ides {
+            recommended()
+        }
+    }
 }
 
 tasks {
@@ -43,10 +61,6 @@ tasks {
     patchPluginXml {
         sinceBuild.set("233")
         untilBuild.set("242.*")
-    }
-
-    runPluginVerifier {
-        ideVersions.set(listOf("IC-2023.3", "IC-2024.1", "IC-2024.2"))
     }
 
     signPlugin {
