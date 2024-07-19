@@ -2,10 +2,16 @@ plugins {
     id("java")
     id("org.jetbrains.kotlin.jvm") version "1.9.22"
     id("org.jetbrains.intellij") version "1.17.0"
+    kotlin("plugin.serialization") version "1.9.20"
+}
+
+dependencies {
+    implementation(kotlin("stdlib"))
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 }
 
 group = "com.drewzillawood.CustomProgressBar"
-version = "2.1.3"
+version = "2.1.4"
 
 repositories {
     mavenCentral()
