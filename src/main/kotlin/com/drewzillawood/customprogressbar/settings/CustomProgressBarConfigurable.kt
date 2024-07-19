@@ -90,6 +90,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                 cycleTimeSlider.value = CYCLE_TIME_DEFAULT
                 repaintIntervalSlider.value = REPAINT_INTERVAL_DEFAULT
               }
+              getDemoConfig.loadState(current)
             }
           }
           indent {
@@ -99,6 +100,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                 .component
               cycleTimeSlider.addChangeListener {
                 current.cycleTime = cycleTimeSlider.value
+                getDemoConfig.loadState(current)
                 indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
               }
             }
@@ -108,6 +110,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                 .component
               repaintIntervalSlider.addChangeListener {
                 current.repaintInterval = repaintIntervalSlider.value
+                getDemoConfig.loadState(current)
                 indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
               }
             }
@@ -162,6 +165,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   }
 
   override fun reset() {
+    getDemoConfig.loadState(initial)
     current.copyFrom(initial)
     panel.reset()
     super.reset()
@@ -174,6 +178,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
   @Throws(ConfigurationException::class)
   override fun apply() {
+    getConfig.loadState(current)
     initial.copyFrom(getConfig.state)
     current.copyFrom(initial)
     panel.apply()
