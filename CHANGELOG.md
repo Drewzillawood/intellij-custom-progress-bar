@@ -1,3 +1,6 @@
+### 2.1.4
+- Refactoring and optimization of storage
+
 ### 2.1.3
 - 2024.2 Compatibility
 
