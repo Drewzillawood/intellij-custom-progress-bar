@@ -72,16 +72,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
               row("Primary:") {
                 myIndeterminatePrimaryColorChooser = ColorPanel()
                 cell(myIndeterminatePrimaryColorChooser).bindColor(current::myIndeterminatePrimaryColor)
-                myIndeterminatePrimaryColorChooser.addActionListener {
-                  current.myIndeterminatePrimaryColor = myIndeterminatePrimaryColorChooser.selectedColor!!.rgb
-                }
               }.resizableRow()
               row("Secondary:") {
                 myIndeterminateSecondaryColorChooser = ColorPanel()
                 cell(myIndeterminateSecondaryColorChooser).bindColor(current::myIndeterminateSecondaryColor)
-                myIndeterminateSecondaryColorChooser.addActionListener {
-                  current.myIndeterminateSecondaryColor = myIndeterminateSecondaryColorChooser.selectedColor!!.rgb
-                }
               }.resizableRow()
             }
             cell(indeterminateExampleProgressBar)
@@ -130,16 +124,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
               row("Primary:") {
                 myDeterminatePrimaryColorChooser = ColorPanel()
                 cell(myDeterminatePrimaryColorChooser).bindColor(current::myDeterminatePrimaryColor)
-                myDeterminatePrimaryColorChooser.addActionListener {
-                  current.myDeterminatePrimaryColor = myDeterminatePrimaryColorChooser.selectedColor!!.rgb
-                }
               }
               row("Secondary:") {
                 myDeterminateSecondaryColorChooser = ColorPanel()
                 cell(myDeterminateSecondaryColorChooser).bindColor(current::myDeterminateSecondaryColor)
-                myDeterminateSecondaryColorChooser.addActionListener {
-                  current.myDeterminateSecondaryColor = myDeterminateSecondaryColorChooser.selectedColor!!.rgb
-                }
               }
             }
             cell(determinateExampleProgressBar)
@@ -153,7 +141,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     simulateProgress()
 
-    return panel;
+    return panel
   }
 
   private fun simulateProgress() {
@@ -205,10 +193,14 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   }
 }
 
-fun <T : ColorPanel> Cell<T>.bindColor(prop: KMutableProperty0<Int>): Cell<T> {
+fun <T: ColorPanel> Cell<T>.bindColor(property: KMutableProperty0<Int>): Cell<T> {
+  val colorChooser = this.component as ColorPanel
+  colorChooser.addActionListener {
+    property.set(colorChooser.selectedColor!!.rgb)
+  }
   return bind(
     { colorPanel -> colorPanel.selectedColor!!.rgb },
     { colorPanel, propColor -> colorPanel.selectedColor = Color(propColor) },
-    prop.toMutableProperty()
+    property.toMutableProperty()
   )
 }
