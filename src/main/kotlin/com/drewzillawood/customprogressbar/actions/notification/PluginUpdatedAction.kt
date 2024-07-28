@@ -1,8 +1,7 @@
-package com.drewzillawood.customprogressbar.notification.activities
+package com.drewzillawood.customprogressbar.actions.notification
 
-import com.drewzillawood.customprogressbar.notification.CUSTOM_PROGRESS_BAR_UPDATED
-import com.drewzillawood.customprogressbar.notification.DoNotAskService.canShowNotification
-import com.drewzillawood.customprogressbar.notification.DoNotAskService.setDoNotAskFor
+import com.drewzillawood.customprogressbar.actions.notification.DoNotAskService.canShowNotification
+import com.drewzillawood.customprogressbar.actions.notification.DoNotAskService.setDoNotAskFor
 import com.drewzillawood.customprogressbar.settings.CustomProgressBarConfigurable
 import com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings
 import com.intellij.ide.plugins.PluginManagerCore
@@ -18,7 +17,7 @@ import com.intellij.openapi.startup.StartupActivity.DumbAware
 import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.LayeredIcon
 
-class PluginUpdatedActivity : DumbAware {
+class PluginUpdatedAction : DumbAware {
 
   override fun runActivity(project: Project) {
     val pluginDescriptor = PluginManagerCore.getPlugin(PluginId.getId("com.drewzillawood.CustomProgressBar"))

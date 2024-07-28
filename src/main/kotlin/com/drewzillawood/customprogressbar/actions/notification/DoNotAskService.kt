@@ -1,4 +1,4 @@
-package com.drewzillawood.customprogressbar.notification
+package com.drewzillawood.customprogressbar.actions.notification
 
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.notification.NotificationGroup
