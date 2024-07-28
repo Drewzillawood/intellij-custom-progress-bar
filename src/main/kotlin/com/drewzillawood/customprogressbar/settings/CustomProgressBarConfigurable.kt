@@ -7,7 +7,12 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SearchableConfigurable
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.openapi.util.IconLoader
+import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.ColorPanel
+import com.intellij.ui.LayeredIcon
+import com.intellij.ui.components.JBLabel
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.bindSelected
@@ -15,15 +20,20 @@ import com.intellij.ui.dsl.builder.bindValue
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.toMutableProperty
 import com.intellij.ui.layout.selected
+import com.intellij.util.ui.GraphicsUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import java.awt.BorderLayout
 import java.awt.Color
+import java.awt.Dimension
+import java.awt.Graphics
 import java.util.*
 import javax.swing.JCheckBox
 import javax.swing.JComponent
+import javax.swing.JPanel
 import javax.swing.JProgressBar
 import javax.swing.JSlider
 import kotlin.reflect.KMutableProperty0
@@ -127,6 +137,20 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
           }
         }
       }
+      group("Image") {
+        panel {
+          row {
+            val svgIcon = IconLoader.getIcon("/META-INF/pluginIcon.svg", CustomProgressBarConfigurable::class.java)
+            val scaledIcon = LayeredIcon.layeredIcon(arrayOf(svgIcon)).scale(48.0F / svgIcon.iconWidth)
+            cell(IconPreviewPanel(JBLabel(scaledIcon)))
+            panel {
+              row {
+                cell(TextFieldWithBrowseButton())
+              }
+            }
+          }
+        }
+      }
     }
 
     simulateProgress()
@@ -194,4 +218,24 @@ fun <T: ColorPanel> Cell<T>.bindColor(property: KMutableProperty0<Int>): Cell<T>
     { colorPanel, propColor -> colorPanel.selectedColor = Color(propColor) },
     property.toMutableProperty()
   )
+}
+
+private class IconPreviewPanel(component: JComponent): JPanel(BorderLayout()) {
+  val radius = 4
+  val size = 60
+
+  init {
+    isOpaque = false
+    background = WelcomeScreenUIManager.getMainAssociatedComponentBackground()
+    preferredSize = Dimension(size, size)
+    minimumSize = Dimension(size, size)
+    add(component)
+  }
+
+  override fun paintComponent(g: Graphics) {
+    g.color = background
+    val config = GraphicsUtil.setupRoundedBorderAntialiasing(g)
+    g.fillRoundRect(0, 0, width, height, 2 * radius, 2 * radius)
+    config.restore()
+  }
 }
