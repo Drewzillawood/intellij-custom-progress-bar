@@ -140,7 +140,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
       group("Image") {
         panel {
           row {
-            val svgIcon = IconLoader.getIcon("/META-INF/pluginIcon.svg", CustomProgressBarConfigurable::class.java)
+            val svgIcon = IconLoader.getIcon(current.imagePath, CustomProgressBarConfigurable::class.java)
             val scaledIcon = LayeredIcon.layeredIcon(arrayOf(svgIcon)).scale(48.0F / svgIcon.iconWidth)
             cell(IconPreviewPanel(JBLabel(scaledIcon)))
             panel {
