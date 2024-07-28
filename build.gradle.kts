@@ -41,6 +41,10 @@ intellijPlatform {
         }
     }
 
+    publishing {
+        hidden = true
+    }
+
     verifyPlugin {
         ides {
             recommended()
