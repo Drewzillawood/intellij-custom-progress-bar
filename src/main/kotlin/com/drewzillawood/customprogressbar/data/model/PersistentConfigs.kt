@@ -21,5 +21,5 @@ class PersistentConfigs : BaseState() {
   var isAdvancedOptionsEnabled: Boolean by property(false)
   var cycleTime: Int by property(CYCLE_TIME_DEFAULT)
   var repaintInterval: Int by property(REPAINT_INTERVAL_DEFAULT)
-  val imagePath: String? by string(DEFAULT_IMAGE_PATH)
+  var imagePath: String? by string(DEFAULT_IMAGE_PATH)
 }
