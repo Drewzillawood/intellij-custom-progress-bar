@@ -4,23 +4,35 @@ import com.drewzillawood.customprogressbar.component.CustomProgressBarDemoUI
 import com.drewzillawood.customprogressbar.data.PersistentConfigsComponent
 import com.drewzillawood.customprogressbar.data.PersistentDemoConfigsComponent
 import com.intellij.openapi.components.service
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import com.intellij.openapi.observable.properties.GraphProperty
+import com.intellij.openapi.observable.properties.PropertyGraph
+import com.intellij.openapi.observable.util.bindStorage
+import com.intellij.openapi.observable.util.transform
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SearchableConfigurable
+import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.withPathToTextConvertor
+import com.intellij.openapi.ui.BrowseFolderDescriptor.Companion.withTextToPathConvertor
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
-import com.intellij.openapi.util.IconLoader
+import com.intellij.openapi.ui.getCanonicalPath
+import com.intellij.openapi.ui.getPresentablePath
+import com.intellij.openapi.ui.validation.WHEN_PROPERTY_CHANGED
+import com.intellij.openapi.vfs.isFile
 import com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenUIManager
 import com.intellij.ui.ColorPanel
-import com.intellij.ui.LayeredIcon
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.bindSelected
+import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.bindValue
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.toMutableProperty
 import com.intellij.ui.layout.selected
+import com.intellij.util.ImageLoader
 import com.intellij.util.ui.GraphicsUtil
+import com.intellij.util.ui.JBImageIcon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,12 +42,17 @@ import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics
+import java.awt.Image
+import java.io.File
+import java.nio.file.Paths
 import java.util.*
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JProgressBar
 import javax.swing.JSlider
+import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
 import kotlin.reflect.KMutableProperty0
 
 class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
@@ -61,6 +78,11 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   private lateinit var advancedOptionsCheckBox: JCheckBox
   private lateinit var cycleTimeSlider: JSlider
   private lateinit var repaintIntervalSlider: JSlider
+  private lateinit var inputFileTextFieldWithBrowseButton: TextFieldWithBrowseButton
+
+  private val propertyGraph: PropertyGraph = PropertyGraph()
+  private val locationProperty: GraphProperty<String> = propertyGraph.lazyProperty { current.imagePath!! }
+    .bindStorage("imagePath")
 
   init {
     indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
@@ -74,6 +96,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   }
 
   override fun createComponent(): JComponent {
+    locationProperty.afterChange {
+      current.imagePath = locationProperty.get()
+    }
+
     panel = panel {
       group("Indeterminate") {
         panel {
@@ -140,12 +166,32 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
       group("Image") {
         panel {
           row {
-            val svgIcon = IconLoader.getIcon(current.imagePath, CustomProgressBarConfigurable::class.java)
-            val scaledIcon = LayeredIcon.layeredIcon(arrayOf(svgIcon)).scale(48.0F / svgIcon.iconWidth)
-            cell(IconPreviewPanel(JBLabel(scaledIcon)))
+            val svgIcon = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
+              ?.getScaledInstance(25, 25, Image.SCALE_SMOOTH)
+            cell(IconPreviewPanel(JBLabel(JBImageIcon(svgIcon!!))))
             panel {
               row {
-                cell(TextFieldWithBrowseButton())
+                inputFileTextFieldWithBrowseButton = textFieldWithBrowseButton("Browse Custom Image",
+                  null,
+                  FileChooserDescriptorFactory.createSingleFileDescriptor()
+                    .withFileFilter { it.isFile }
+                    .withPathToTextConvertor(::getPresentablePath)
+                    .withTextToPathConvertor(::getCanonicalPath))
+                  .bindText(locationProperty.transform(::getPresentablePath, ::getCanonicalPath))
+                  .validationRequestor(WHEN_PROPERTY_CHANGED(locationProperty))
+                  .validationOnInput {
+                    if (it.isVisible) {
+                      val path = Paths.get(it.text)
+                      when {
+                        it.text.isEmpty() -> error("Specify path to SVG")
+                        !path.exists() -> error("SVG file does not exist")
+                        path.isDirectory() -> error("Path can't be a directory")
+                        else -> null
+                      }
+                    }
+                    else null
+                  }.component
+                cell(inputFileTextFieldWithBrowseButton)
               }
             }
           }
@@ -222,7 +268,7 @@ fun <T: ColorPanel> Cell<T>.bindColor(property: KMutableProperty0<Int>): Cell<T>
 
 private class IconPreviewPanel(component: JComponent): JPanel(BorderLayout()) {
   val radius = 4
-  val size = 60
+  val size = 50
 
   init {
     isOpaque = false
