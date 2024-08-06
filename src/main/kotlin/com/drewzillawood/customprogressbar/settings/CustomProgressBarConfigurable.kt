@@ -79,6 +79,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   private lateinit var cycleTimeSlider: JSlider
   private lateinit var repaintIntervalSlider: JSlider
   private lateinit var inputFileTextFieldWithBrowseButton: TextFieldWithBrowseButton
+  private lateinit var component: IconPreviewPanel
 
   private val propertyGraph: PropertyGraph = PropertyGraph()
   private val locationProperty: GraphProperty<String> = propertyGraph.lazyProperty { current.imagePath!! }
@@ -98,6 +99,12 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   override fun createComponent(): JComponent {
     locationProperty.afterChange {
       current.imagePath = locationProperty.get()
+      if (current.imagePath != null) {
+        component.remove(0)
+        val svgIcon = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
+          ?.getScaledInstance(25, 25, Image.SCALE_SMOOTH)
+        component.add(JBLabel(JBImageIcon(svgIcon!!)))
+      }
     }
 
     panel = panel {
@@ -168,7 +175,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
           row {
             val svgIcon = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
               ?.getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-            cell(IconPreviewPanel(JBLabel(JBImageIcon(svgIcon!!))))
+            component = IconPreviewPanel(JBLabel(JBImageIcon(svgIcon!!)))
+            cell(component)
             panel {
               row {
                 inputFileTextFieldWithBrowseButton = textFieldWithBrowseButton("Browse Custom Image",
@@ -192,6 +200,16 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                     else null
                   }.component
                 cell(inputFileTextFieldWithBrowseButton)
+//                inputFileTextFieldWithBrowseButton.addDocumentListener(object : DocumentAdapter() {
+//                  override fun textChanged(event: DocumentEvent) {
+//                    val text = event.document.getText(0, event.document.length)
+//                    if (text != null && text.isNotEmpty()) {
+//                      val svgIcon = ImageLoader.loadFromStream(File(text).toURI().toURL().openStream())
+//                        ?.getScaledInstance(25, 25, Image.SCALE_SMOOTH)
+//                      component = IconPreviewPanel(JBLabel(JBImageIcon(svgIcon!!)))
+//                    }
+//                  }
+//                })
               }
             }
           }
