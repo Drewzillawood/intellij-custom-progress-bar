@@ -5,7 +5,6 @@ import com.intellij.ide.ui.laf.darcula.ui.DarculaProgressBarUI
 import com.intellij.openapi.components.service
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.ImageLoader
-import com.intellij.util.ui.GraphicsUtil
 import com.intellij.util.ui.JBInsets
 import com.intellij.util.ui.UIUtil
 import java.awt.Color
@@ -15,7 +14,6 @@ import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.Image
 import java.awt.Insets
-import java.awt.Paint
 import java.awt.Rectangle
 import java.awt.RenderingHints
 import java.awt.Shape
@@ -34,16 +32,17 @@ import kotlin.math.min
 open class CustomProgressBarUI : DarculaProgressBarUI() {
 
   @Volatile
-  private var indeterminateOffset = 0
+  private var indeterminateOffset = -20
 
-  @Volatile
-  private var velocity = 1
+  private var velocity: Int
 
   private val DEFAULT_WIDTH = 4
 
-  private lateinit var paintLoadedBackground: Paint
-
   private var current = service<PersistentConfigsComponent>().state
+
+  init {
+    velocity = current.cycleTime / current.repaintInterval
+  }
 
   override fun updateIndeterminateAnimationIndex(startMillis: Long) {
     val numFrames = current.cycleTime / current.repaintInterval
@@ -62,19 +61,19 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     c ?: return
 
     g2d.drawProgressBar(c) { insets, w, h, barRectWidth, barRectHeight ->
-      g2d.drawBorder(component = c, width = w, height = h)
+//      g2d.drawBorder(component = c, width = w, height = h)
       g2d.drawProgression(g = g, c = c, width = w, height = h)
 
       val loadingImage: BufferedImage = toBufferedImage(ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
         ?.getScaledInstance(20, 20, Image.SCALE_SMOOTH)!!)
 
       indeterminateOffset += velocity
-      if (indeterminateOffset <= loadingImage.width / 2) {
-        indeterminateOffset = loadingImage.width / 2
-        velocity = 1
-      } else if (indeterminateOffset >= w + loadingImage.width / 2) {
-        indeterminateOffset = w + loadingImage.width / 2
-        velocity = -1
+ /*     if (indeterminateOffset <= -loadingImage.width) {
+        indeterminateOffset = -loadingImage.width
+        velocity = current.cycleTime / current.repaintInterval / 2
+      } else */if (indeterminateOffset >= w + loadingImage.width) {
+        indeterminateOffset = -loadingImage.width
+        velocity = current.cycleTime / current.repaintInterval
       }
 
       g2d.drawLoadingImage(
@@ -112,22 +111,8 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         size.width = getStripeWidth()
       }
     }
-    return size
+    return Dimension(size.width, (20 + MARGIN * 4).toInt())
   }
-
-//  override fun getPreferredSize(c: JComponent?): Dimension {
-//    val colors = arrayOf(getIndeterminatePrimaryColor(), getIndeterminateSecondaryColor())
-//    paintLoadedBackground = LinearGradientPaint(
-//      0f,
-//      JBUIScale.scale(2f),
-//      0f,
-//      progressBar.height - JBUIScale.scale(6f),
-//      colors.indices.map { it.toFloat() / (colors.size - 1) }.toFloatArray(),
-//      colors
-//    )
-//    val imageHeight = 20
-//    return Dimension(super.getPreferredSize(c).width, (imageHeight + MARGIN * 4).toInt())
-//  }
 
   private fun getStripeWidth(): Int {
     val ho = progressBar.getClientProperty("ProgressBar.stripeWidth")
@@ -283,7 +268,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     image ?: return
 
     val verticalMargin = (component.height - image.height) / 2f
-    val horizontalMargin = 0f
+    val horizontalMargin = -20f
     val maxedOffset = min(
       max(horizontalMargin, offset - image.width / 2f),
       component.width - image.width - horizontalMargin
@@ -337,7 +322,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
           pHeight.toFloat()
         )
         yOffset = r.y + pHeight / 2
-        g2.paint = GradientPaint(
+        paint = GradientPaint(
           (r.x + animationIndex * step * 2).toFloat(),
           yOffset.toFloat(),
           startColor,
@@ -355,22 +340,22 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
           pWidth.toFloat()
         )
         xOffset = r.x + pWidth / 2
-        g2.paint = GradientPaint(
+        paint = GradientPaint(
           xOffset.toFloat(), (r.y + animationIndex * step * 2).toFloat(), startColor,
           xOffset.toFloat(), (r.y + frameCount * step + animationIndex * step * 2).toFloat(), endColor, true
         )
       }
-      g2.fill(
+      g2.fill(shape)
+      fill(
         RoundRectangle2D.Float(
-          10f * SCALED_MARGIN,
+          0f * SCALED_MARGIN,
           10f * SCALED_MARGIN,
           JBUIScale.scale(width * 1f)/*width - JBUIScale.scale(20f)*/,
           /*height - */JBUIScale.scale(5f),
-          SCALED_PROGRESSION_RADIUS,
-          SCALED_PROGRESSION_RADIUS
+          JBUIScale.scale(3f),
+          JBUIScale.scale(3f)
         )
       )
-      g2.fill(shape)
 
       // Paint text
 //      if (progressBar.isStringPainted) {
@@ -384,20 +369,6 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
       g2.dispose()
     }
   }
-
-//  private fun Graphics2D.drawProgression(width: Int, height: Int) {
-//    paint = paintLoadedBackground
-//    fill(
-//      RoundRectangle2D.Float(
-//        2f * SCALED_MARGIN,
-//        2f * SCALED_MARGIN,
-//        width - JBUIScale.scale(5f),
-//        height - JBUIScale.scale(5f),
-//        SCALED_PROGRESSION_RADIUS,
-//        SCALED_PROGRESSION_RADIUS
-//      )
-//    )
-//  }
 
   private fun Graphics2D.drawDeterminedText(
     component: JComponent,
@@ -479,7 +450,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
       return
     }
 
-    val config = GraphicsUtil.setupAAPainting(this)
+//    val config = GraphicsUtil.setupAAPainting(this)
 
     val b = progressBar.insets
     val w = progressBar.width
@@ -493,8 +464,8 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
       return
     }
 
-    block(b, w - 20, h, barRectWidth, barRectHeight)
-    config.restore()
+    block(b, w, h, barRectWidth, barRectHeight)
+//    config.restore()
   }
 
   companion object {
