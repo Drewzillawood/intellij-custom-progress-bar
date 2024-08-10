@@ -104,6 +104,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
         val svgIcon = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
           ?.getScaledInstance(25, 25, Image.SCALE_SMOOTH)
         component.add(JBLabel(JBImageIcon(svgIcon!!)))
+        getDemoConfig.loadState(current)
       }
     }
 
