@@ -200,16 +200,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                     else null
                   }.component
                 cell(inputFileTextFieldWithBrowseButton)
-//                inputFileTextFieldWithBrowseButton.addDocumentListener(object : DocumentAdapter() {
-//                  override fun textChanged(event: DocumentEvent) {
-//                    val text = event.document.getText(0, event.document.length)
-//                    if (text != null && text.isNotEmpty()) {
-//                      val svgIcon = ImageLoader.loadFromStream(File(text).toURI().toURL().openStream())
-//                        ?.getScaledInstance(25, 25, Image.SCALE_SMOOTH)
-//                      component = IconPreviewPanel(JBLabel(JBImageIcon(svgIcon!!)))
-//                    }
-//                  }
-//                })
               }
             }
           }
