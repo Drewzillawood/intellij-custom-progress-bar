@@ -2,7 +2,10 @@ package com.drewzillawood.customprogressbar.component
 
 import com.drewzillawood.customprogressbar.data.PersistentDemoConfigsComponent
 import com.intellij.openapi.components.service
+import com.intellij.util.ImageLoader
 import java.awt.Color
+import java.awt.Image
+import java.io.File
 import javax.swing.UIManager
 
 open class CustomProgressBarDemoUI : CustomProgressBarUI() {
@@ -20,6 +23,9 @@ open class CustomProgressBarDemoUI : CustomProgressBarUI() {
     UIManager.put("ProgressBar.repaintInterval", currentDemo.repaintInterval)
     UIManager.put("ProgressBar.cycleTime", currentDemo.cycleTime)
   }
+
+  override fun loadImageAndScale() = ImageLoader.loadFromUrl(File(currentDemo.imagePath!!).toURI().toURL())
+    ?.getScaledInstance(20, 20, Image.SCALE_SMOOTH)!!
 
   override fun getIndeterminateSecondaryColor(): Color {
     return Color(currentDemo.myIndeterminateSecondaryColor)

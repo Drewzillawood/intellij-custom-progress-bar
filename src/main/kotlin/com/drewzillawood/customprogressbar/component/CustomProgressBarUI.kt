@@ -134,8 +134,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         g2d.drawProgression(width = w, height = h)
 
         val loadingImage: BufferedImage = toBufferedImage(
-          ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
-            ?.getScaledInstance(20, 20, Image.SCALE_SMOOTH)!!
+          loadImageAndScale()
         )
 
         indeterminateOffset += velocity
@@ -247,8 +246,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         g2d.fill(coloredShape)
 
         val loadingImage: BufferedImage = toBufferedImage(
-          ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
-            ?.getScaledInstance(20, 20, Image.SCALE_SMOOTH)!!
+          loadImageAndScale()
         )
         g2d.drawLoadingImage(c, loadingImage, offset = amountFull.toFloat())
 
@@ -261,6 +259,9 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
       g2d.dispose()
     }
   }
+
+  open fun loadImageAndScale() = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
+    ?.getScaledInstance(20, 20, Image.SCALE_SMOOTH)!!
 
   open fun getDeterminatePrimaryColor(): Color {
     return Color(current.myDeterminatePrimaryColor)
