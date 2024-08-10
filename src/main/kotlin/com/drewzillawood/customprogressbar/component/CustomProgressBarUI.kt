@@ -142,10 +142,11 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         /*     if (indeterminateOffset <= -loadingImage.width) {
           indeterminateOffset = -loadingImage.width
           velocity = current.cycleTime / current.repaintInterval / 2
-        } else */if (indeterminateOffset >= w + loadingImage.width) {
-        indeterminateOffset = -loadingImage.width
-        velocity = current.cycleTime / current.repaintInterval
-      }
+        } else */
+        if (indeterminateOffset >= w + loadingImage.width) {
+          indeterminateOffset = -loadingImage.width
+          velocity = current.cycleTime / current.repaintInterval
+        }
 
         g2d.drawLoadingImage(
           component = c,
@@ -207,75 +208,57 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
   }
 
   override fun paintDeterminate(g: Graphics?, c: JComponent?) {
-    val g2 = g?.create() as Graphics2D
+    val g2d = g?.create() as Graphics2D
+    c ?: return
+
     try {
-      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-      g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE)
+      g2d.drawProgressBar(c) { insets, w, h, barRectWidth, barRectHeight ->
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+        g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE)
+        val r = Rectangle(progressBar.size)
 
-      val r = Rectangle(progressBar.size)
-      if (c!!.isOpaque && c.parent != null) {
-        g2.color = c.parent.background
-        g2.fill(r)
-      }
+        if (c.isOpaque && c.parent != null) {
+          g2d.color = c.parent.background
+          g2d.fill(r)
+        }
 
-      val i = progressBar.insets
-      JBInsets.removeFrom(r, i)
-      val amountFull = getAmountFull(i, r.width, r.height)
+        val i = progressBar.insets
+        JBInsets.removeFrom(r, i)
+        val amountFull = getAmountFull(i, r.width, r.height)
 
-      val fullShape: Shape
-      val coloredShape: Shape
-      val orientation = progressBar.orientation
-      if (orientation == SwingConstants.HORIZONTAL) {
-        val pHeight = progressBar.preferredSize.height
-        val yOffset = r.y + (r.height - pHeight) / 2
+        val fullShape: Shape
+        val coloredShape: Shape
+        val orientation = progressBar.orientation
+        if (orientation == SwingConstants.HORIZONTAL) {
+          val yOffset = r.y + (r.height - progressBar.preferredSize.height) / 2
+          fullShape = getShapedRect(r.x.toFloat(), yOffset.toFloat() + 10, r.width.toFloat(), 5f, 5f)
+          coloredShape = getShapedRect(r.x.toFloat(), yOffset.toFloat() + 10, amountFull.toFloat(), 5f, 5f)
+        } else {
+          val xOffset = r.x + (r.width - progressBar.preferredSize.width) / 2
+          fullShape = getShapedRect(xOffset.toFloat(), r.y.toFloat(), progressBar.preferredSize.width.toFloat(), r.height.toFloat(), progressBar.preferredSize.width.toFloat())
+          coloredShape = getShapedRect(xOffset.toFloat(), r.y.toFloat(), progressBar.preferredSize.width.toFloat(), amountFull.toFloat(), progressBar.preferredSize.width.toFloat())
+        }
+        g2d.color = getDeterminateSecondaryColor()
+        g2d.fill(fullShape)
 
-        fullShape = getShapedRect(
-          r.x.toFloat(),
-          yOffset.toFloat() + 10,
-          r.width.toFloat(),
-          5f,
-          5f
+        // Use foreground color as a reference, don't use it directly. This is done for compatibility reason.
+        // Colors are hardcoded in UI delegates by design. If more colors are needed contact designers.
+        g2d.color = getDeterminatePrimaryColor()
+        g2d.fill(coloredShape)
+
+        val loadingImage: BufferedImage = toBufferedImage(
+          ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
+            ?.getScaledInstance(20, 20, Image.SCALE_SMOOTH)!!
         )
-        coloredShape = getShapedRect(
-          r.x.toFloat(),
-          yOffset.toFloat() + 10,
-          amountFull.toFloat(),
-          5f,
-          5f
-        )
-      } else {
-        val pWidth = progressBar.preferredSize.width
-        val xOffset = r.x + (r.width - pWidth) / 2
+        g2d.drawLoadingImage(c, loadingImage, offset = amountFull.toFloat())
 
-        fullShape = getShapedRect(
-          xOffset.toFloat(),
-          r.y.toFloat(),
-          pWidth.toFloat(),
-          r.height.toFloat(),
-          pWidth.toFloat()
-        )
-        coloredShape = getShapedRect(
-          xOffset.toFloat(),
-          r.y.toFloat(),
-          pWidth.toFloat(),
-          amountFull.toFloat(),
-          pWidth.toFloat()
-        )
-      }
-      g2.color = getDeterminateSecondaryColor()
-      g2.fill(fullShape)
-
-      // Use foreground color as a reference, don't use it directly. This is done for compatibility reason.
-      // Colors are hardcoded in UI delegates by design. If more colors are needed contact designers.
-      g2.color = getDeterminatePrimaryColor()
-      g2.fill(coloredShape)
-
-      // Paint text
-      if (progressBar.isStringPainted) {
-        paintString(g, i.left, i.top, r.width, r.height, amountFull, i)
+        // Paint text
+        if (progressBar.isStringPainted) {
+          paintString(g, i.left, i.top, r.width, r.height, amountFull, i)
+        }
       }
     } finally {
-      g2.dispose()
+      g2d.dispose()
     }
   }
 
