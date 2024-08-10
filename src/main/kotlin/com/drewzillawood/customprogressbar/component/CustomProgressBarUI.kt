@@ -76,10 +76,20 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         val i = progressBar.insets
         JBInsets.removeFrom(r, i)
         val orientation = progressBar.orientation
+        var yOffset = r.y + (r.height - progressBar.preferredSize.height) / 2
+        var xOffset = r.x + (r.width - progressBar.preferredSize.width) / 2
 
+        val shape: Shape
         val step = JBUIScale.scale(6)
         if (orientation == SwingConstants.HORIZONTAL) {
-          val yOffset = r.y + progressBar.preferredSize.height / 2
+          shape = getShapedRect(
+            r.x.toFloat(),
+            yOffset.toFloat() - 10,
+            r.width.toFloat(),
+            5f,
+            5f
+          )
+          yOffset = r.y + progressBar.preferredSize.height / 2
           g2d.paint = GradientPaint(
             (r.x + animationIndex * step * 2).toFloat(),
             yOffset.toFloat(),
@@ -90,7 +100,14 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
             true
           )
         } else {
-          val xOffset = r.x + progressBar.preferredSize.width / 2
+          shape = getShapedRect(
+            xOffset.toFloat(),
+            r.y.toFloat(),
+            progressBar.preferredSize.width.toFloat(),
+            r.height.toFloat(),
+            progressBar.preferredSize.width.toFloat()
+          )
+          xOffset = r.x + progressBar.preferredSize.width / 2
           g2d.paint = GradientPaint(
             xOffset.toFloat(),
             (r.y + animationIndex * step * 2).toFloat(),
@@ -101,7 +118,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
             true
           )
         }
-//        g2d.fill(shape)
+        g2d.fill(shape)
 
         // Paint text
         //      if (progressBar.isStringPainted) {
@@ -129,6 +146,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         indeterminateOffset = -loadingImage.width
         velocity = current.cycleTime / current.repaintInterval
       }
+
         g2d.drawLoadingImage(
           component = c,
           image = loadingImage,
