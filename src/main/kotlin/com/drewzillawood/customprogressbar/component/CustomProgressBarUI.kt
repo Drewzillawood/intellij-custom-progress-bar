@@ -231,17 +231,17 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
 
         fullShape = getShapedRect(
           r.x.toFloat(),
-          yOffset.toFloat(),
+          yOffset.toFloat() + 10,
           r.width.toFloat(),
-          pHeight.toFloat(),
-          pHeight.toFloat()
+          5f,
+          5f
         )
         coloredShape = getShapedRect(
           r.x.toFloat(),
-          yOffset.toFloat(),
+          yOffset.toFloat() + 10,
           amountFull.toFloat(),
-          pHeight.toFloat(),
-          pHeight.toFloat()
+          5f,
+          5f
         )
       } else {
         val pWidth = progressBar.preferredSize.width
