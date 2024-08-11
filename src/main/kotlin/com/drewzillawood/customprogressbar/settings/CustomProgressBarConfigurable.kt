@@ -29,6 +29,7 @@ import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.bindValue
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.toMutableProperty
+import com.intellij.ui.icons.EMPTY_ICON
 import com.intellij.ui.layout.selected
 import com.intellij.util.ImageLoader
 import com.intellij.util.ui.GraphicsUtil
@@ -102,7 +103,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
       if (current.imagePath != null) {
         component.remove(0)
         val svgIcon = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
-          ?.getScaledInstance(25, 25, Image.SCALE_SMOOTH)
+          ?.getScaledInstance(40, 40, Image.SCALE_SMOOTH)
         component.add(JBLabel(JBImageIcon(svgIcon!!)))
         getDemoConfig.loadState(current)
       }
@@ -175,7 +176,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
         panel {
           row {
             val svgIcon = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
-              ?.getScaledInstance(25, 25, Image.SCALE_SMOOTH)
+              ?.getScaledInstance(40, 40, Image.SCALE_SMOOTH)
+              ?: EMPTY_ICON.image
             component = IconPreviewPanel(JBLabel(JBImageIcon(svgIcon!!)))
             cell(component)
             panel {
