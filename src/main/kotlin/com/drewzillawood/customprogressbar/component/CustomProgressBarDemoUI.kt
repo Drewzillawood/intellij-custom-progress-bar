@@ -24,6 +24,10 @@ open class CustomProgressBarDemoUI : CustomProgressBarUI() {
     UIManager.put("ProgressBar.cycleTime", currentDemo.cycleTime)
   }
 
+  override fun isCustomImageEnabled(): Boolean {
+    return currentDemo.isCustomImageEnabled
+  }
+
   override fun loadImageAndScale() = ImageLoader.loadFromUrl(File(currentDemo.imagePath!!).toURI().toURL())
     ?.getScaledInstance(20, 20, Image.SCALE_SMOOTH)!!
 

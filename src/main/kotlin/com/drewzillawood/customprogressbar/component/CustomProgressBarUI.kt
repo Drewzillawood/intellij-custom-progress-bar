@@ -131,27 +131,29 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         //      } finally {
         //        g2d.dispose()
         //      }
+
         g2d.drawProgression(width = w, height = h)
+        if (isCustomImageEnabled()) {
+          val loadingImage: BufferedImage = toBufferedImage(
+            loadImageAndScale()
+          )
 
-        val loadingImage: BufferedImage = toBufferedImage(
-          loadImageAndScale()
-        )
-
-        indeterminateOffset += velocity
-        /*     if (indeterminateOffset <= -loadingImage.width) {
+          indeterminateOffset += velocity
+          /*     if (indeterminateOffset <= -loadingImage.width) {
           indeterminateOffset = -loadingImage.width
           velocity = current.cycleTime / current.repaintInterval / 2
         } else */
-        if (indeterminateOffset >= w + loadingImage.width) {
-          indeterminateOffset = -loadingImage.width
-          velocity = current.cycleTime / current.repaintInterval
-        }
+          if (indeterminateOffset >= w + loadingImage.width) {
+            indeterminateOffset = -loadingImage.width
+            velocity = current.cycleTime / current.repaintInterval
+          }
 
-        g2d.drawLoadingImage(
-          component = c,
-          image = loadingImage,
-          offset = indeterminateOffset.toFloat()
-        )
+          g2d.drawLoadingImage(
+            component = c,
+            image = loadingImage,
+            offset = indeterminateOffset.toFloat()
+          )
+        }
         g2d.drawUndeterminedText(
           component = c,
           insets = insets,
@@ -245,10 +247,12 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         g2d.color = getDeterminatePrimaryColor()
         g2d.fill(coloredShape)
 
-        val loadingImage: BufferedImage = toBufferedImage(
-          loadImageAndScale()
-        )
-        g2d.drawLoadingImage(c, loadingImage, offset = amountFull.toFloat())
+        if (isCustomImageEnabled()) {
+          val loadingImage: BufferedImage = toBufferedImage(
+            loadImageAndScale()
+          )
+          g2d.drawLoadingImage(c, loadingImage, offset = amountFull.toFloat())
+        }
 
         // Paint text
         if (progressBar.isStringPainted) {
@@ -258,6 +262,10 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     } finally {
       g2d.dispose()
     }
+  }
+
+  open fun isCustomImageEnabled(): Boolean {
+    return current.isCustomImageEnabled
   }
 
   open fun loadImageAndScale() = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())

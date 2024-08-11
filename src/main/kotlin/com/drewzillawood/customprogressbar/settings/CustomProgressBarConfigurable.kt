@@ -80,7 +80,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   private lateinit var cycleTimeSlider: JSlider
   private lateinit var repaintIntervalSlider: JSlider
   private lateinit var inputFileTextFieldWithBrowseButton: TextFieldWithBrowseButton
-  private lateinit var component: IconPreviewPanel
+  private lateinit var previewPanel: IconPreviewPanel
+  private lateinit var customImageCheckBox: JCheckBox
 
   private val propertyGraph: PropertyGraph = PropertyGraph()
   private val locationProperty: GraphProperty<String> = propertyGraph.lazyProperty { current.imagePath!! }
@@ -101,10 +102,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     locationProperty.afterChange {
       current.imagePath = locationProperty.get()
       if (current.imagePath != null) {
-        component.remove(0)
-        val svgIcon = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
-          ?.getScaledInstance(40, 40, Image.SCALE_SMOOTH)
-        component.add(JBLabel(JBImageIcon(svgIcon!!)))
+        previewPanel.remove(0)
+        previewPanel.add(JBLabel(JBImageIcon(getSvgIcon())))
         getDemoConfig.loadState(current)
       }
     }
@@ -175,11 +174,17 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
       group("Image") {
         panel {
           row {
-            val svgIcon = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
-              ?.getScaledInstance(40, 40, Image.SCALE_SMOOTH)
-              ?: EMPTY_ICON.image
-            component = IconPreviewPanel(JBLabel(JBImageIcon(svgIcon!!)))
-            cell(component)
+            customImageCheckBox = checkBox("Custom Image")
+              .bindSelected(current::isCustomImageEnabled)
+              .component
+            customImageCheckBox.addActionListener {
+              current.isCustomImageEnabled = customImageCheckBox.isSelected
+              getDemoConfig.loadState(current)
+            }
+          }
+          row {
+            previewPanel = IconPreviewPanel(JBLabel(JBImageIcon(getSvgIcon())))
+            cell(previewPanel)
             panel {
               row {
                 inputFileTextFieldWithBrowseButton = textFieldWithBrowseButton("Browse Custom Image",
@@ -205,7 +210,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                 cell(inputFileTextFieldWithBrowseButton)
               }
             }
-          }
+          }.visibleIf(customImageCheckBox.selected)
         }
       }
     }
@@ -214,6 +219,10 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     return panel
   }
+
+  private fun getSvgIcon(): Image = (ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
+    ?.getScaledInstance(40, 40, Image.SCALE_SMOOTH)
+    ?: EMPTY_ICON.image)
 
   private fun simulateProgress() {
     val totalTime = 2000L

@@ -7,7 +7,7 @@ import java.awt.Color
 
 private const val CYCLE_TIME_DEFAULT: Int = 800
 private const val REPAINT_INTERVAL_DEFAULT: Int = 50
-private const val DEFAULT_IMAGE_PATH: String = "META-INF/pluginIcon.svg"
+private const val DEFAULT_IMAGE_PATH: String = "C:\\Users\\drew\\IdeaProjects\\CustomProgressBar\\src\\main\\resources\\META-INF\\pluginIcon.svg"
 
 private val DEFAULT_PRIMARY_BLUE = Color(64, 115, 213)
 private val DEFAULT_SECONDARY_BLUE = Color(100, 148, 243)
@@ -21,5 +21,6 @@ class PersistentConfigs : BaseState() {
   var isAdvancedOptionsEnabled: Boolean by property(false)
   var cycleTime: Int by property(CYCLE_TIME_DEFAULT)
   var repaintInterval: Int by property(REPAINT_INTERVAL_DEFAULT)
+  var isCustomImageEnabled: Boolean by property(false)
   var imagePath: String? by string(DEFAULT_IMAGE_PATH)
 }
