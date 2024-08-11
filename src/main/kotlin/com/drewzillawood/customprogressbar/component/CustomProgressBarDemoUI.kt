@@ -29,7 +29,7 @@ open class CustomProgressBarDemoUI : CustomProgressBarUI() {
   }
 
   override fun loadImageAndScale() = ImageLoader.loadFromUrl(File(currentDemo.imagePath!!).toURI().toURL())
-    ?.getScaledInstance(20, 20, Image.SCALE_SMOOTH)!!
+    ?.getScaledInstance(16, 16, Image.SCALE_SMOOTH)!!
 
   override fun getIndeterminateSecondaryColor(): Color {
     return Color(currentDemo.myIndeterminateSecondaryColor)
