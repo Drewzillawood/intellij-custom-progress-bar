@@ -2,6 +2,7 @@ package com.drewzillawood.customprogressbar.component
 
 import com.drewzillawood.customprogressbar.data.PersistentDemoConfigsComponent
 import com.intellij.openapi.components.service
+import com.intellij.ui.icons.EMPTY_ICON
 import com.intellij.util.ImageLoader
 import java.awt.Color
 import java.awt.Image
@@ -28,8 +29,14 @@ open class CustomProgressBarDemoUI : CustomProgressBarUI() {
     return currentDemo.isCustomImageEnabled
   }
 
-  override fun loadImageAndScale() = ImageLoader.loadFromUrl(File(currentDemo.imagePath!!).toURI().toURL())
-    ?.getScaledInstance(16, 16, Image.SCALE_SMOOTH)!!
+  override fun loadImageAndScale(): Image = (
+    currentDemo.imagePath
+      ?.let {
+        ImageLoader.loadFromUrl(File(it).toURI().toURL())
+      } ?: EMPTY_ICON.image
+    )
+    ?.getScaledInstance(16, 16, Image.SCALE_SMOOTH)
+    ?: EMPTY_ICON.image
 
   override fun getIndeterminateSecondaryColor(): Color {
     return Color(currentDemo.myIndeterminateSecondaryColor)

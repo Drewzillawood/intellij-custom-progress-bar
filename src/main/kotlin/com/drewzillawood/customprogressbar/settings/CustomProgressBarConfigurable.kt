@@ -39,6 +39,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import org.apache.logging.log4j.util.Strings
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Dimension
@@ -84,7 +85,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   private lateinit var customImageCheckBox: JCheckBox
 
   private val propertyGraph: PropertyGraph = PropertyGraph()
-  private val locationProperty: GraphProperty<String> = propertyGraph.lazyProperty { current.imagePath!! }
+  private val locationProperty: GraphProperty<String> = propertyGraph.lazyProperty { current.imagePath ?: Strings.EMPTY }
     .bindStorage("imagePath")
 
   init {
@@ -220,9 +221,14 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     return panel
   }
 
-  private fun getSvgIcon(): Image = (ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
+  private fun getSvgIcon(): Image = (
+    current.imagePath
+      ?.let {
+        ImageLoader.loadFromUrl(File(it).toURI().toURL())
+      } ?: EMPTY_ICON.image
+    )
     ?.getScaledInstance(40, 40, Image.SCALE_SMOOTH)
-    ?: EMPTY_ICON.image)
+    ?: EMPTY_ICON.image
 
   private fun simulateProgress() {
     val totalTime = 2000L

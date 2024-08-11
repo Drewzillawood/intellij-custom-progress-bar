@@ -22,5 +22,5 @@ class PersistentConfigs : BaseState() {
   var cycleTime: Int by property(CYCLE_TIME_DEFAULT)
   var repaintInterval: Int by property(REPAINT_INTERVAL_DEFAULT)
   var isCustomImageEnabled: Boolean by property(false)
-  var imagePath: String? by string(DEFAULT_IMAGE_PATH)
+  var imagePath: String? by string(null)
 }

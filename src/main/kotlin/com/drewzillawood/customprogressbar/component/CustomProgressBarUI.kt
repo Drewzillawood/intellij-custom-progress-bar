@@ -3,6 +3,7 @@ package com.drewzillawood.customprogressbar.component
 import com.drewzillawood.customprogressbar.data.PersistentConfigsComponent
 import com.intellij.ide.ui.laf.darcula.ui.DarculaProgressBarUI
 import com.intellij.openapi.components.service
+import com.intellij.ui.icons.EMPTY_ICON
 import com.intellij.ui.scale.JBUIScale
 import com.intellij.util.ImageLoader
 import com.intellij.util.ui.ImageUtil
@@ -251,8 +252,14 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     return current.isCustomImageEnabled
   }
 
-  open fun loadImageAndScale() = ImageLoader.loadFromUrl(File(current.imagePath!!).toURI().toURL())
-    ?.getScaledInstance(16, 16, Image.SCALE_SMOOTH)!!
+  open fun loadImageAndScale(): Image = (
+    current.imagePath
+      ?.let {
+        ImageLoader.loadFromUrl(File(it).toURI().toURL())
+      } ?: EMPTY_ICON.image
+    )
+    ?.getScaledInstance(16, 16, Image.SCALE_SMOOTH)
+    ?: EMPTY_ICON.image
 
   open fun getDeterminatePrimaryColor(): Color {
     return Color(current.myDeterminatePrimaryColor)
