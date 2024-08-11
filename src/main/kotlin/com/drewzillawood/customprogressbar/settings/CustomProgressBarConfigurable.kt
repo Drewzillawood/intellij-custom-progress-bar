@@ -175,7 +175,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
       group("Image") {
         panel {
           row {
-            customImageCheckBox = checkBox("Custom Image")
+            customImageCheckBox = checkBox("Enable Custom Image")
               .bindSelected(current::isCustomImageEnabled)
               .component
             customImageCheckBox.addActionListener {
