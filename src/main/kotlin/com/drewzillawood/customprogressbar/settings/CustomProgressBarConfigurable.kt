@@ -105,7 +105,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
       if (current.imagePath != null) {
         previewPanel.remove(0)
         previewPanel.add(JBLabel(JBImageIcon(getSvgIcon())))
-        getDemoConfig.loadState(current)
       }
     }
 
@@ -180,7 +179,6 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
               .component
             customImageCheckBox.addActionListener {
               current.isCustomImageEnabled = customImageCheckBox.isSelected
-              getDemoConfig.loadState(current)
             }
           }
           row {
