@@ -1,7 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.9.22"
-    id("org.jetbrains.intellij.platform") version "2.0.0-beta9"
+    kotlin("jvm") version "2.0.0"
+    id("org.jetbrains.intellij.platform") version "2.0.1"
     kotlin("plugin.serialization") version "1.9.20"
 }
 
@@ -45,27 +47,42 @@ intellijPlatform {
         hidden = true
     }
 
-    verifyPlugin {
+    pluginVerification {
         ides {
             recommended()
         }
     }
 }
 
+kotlin {
+    jvmToolchain(JavaVersion.VERSION_21.toString().toInt())
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_21)
+        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+    }
+}
+
 tasks {
     // Set the JVM compatibility versions
-    withType<JavaCompile> {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
-    }
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
-    }
-
-    patchPluginXml {
-        sinceBuild.set("233")
-        untilBuild.set("242.*")
-    }
+//    withType<JavaCompile> {
+//        options.encoding = "UTF-8"
+//        sourceCompatibility = "21"
+//        targetCompatibility = "21"
+//    }
+//    withType<KotlinJvmCompile> {
+//        compilerOptions {
+//            jvmTarget = JvmTarget.JVM_21
+//        }
+//    }
+//
+//    patchPluginXml {
+//        sinceBuild.set("242")
+//        untilBuild.set("242.*")
+//    }
 
     signPlugin {
         certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
