@@ -67,13 +67,13 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         return
       }
 
-      val b = progressBar.insets
-      val w = progressBar.width
-      var h = progressBar.preferredSize.height
-      if (!isEven(c.height - h)) h++
+      val insets = progressBar.insets
+      val width = progressBar.width
+      var height = progressBar.preferredSize.height
+      if (!isEven(c.height - height)) height++
 
-      val barRectWidth = w - (b.right + b.left)
-      val barRectHeight = h - (b.top + b.bottom)
+      val barRectWidth = width - (insets.right + insets.left)
+      val barRectHeight = height - (insets.top + insets.bottom)
 
       if (barRectWidth <= 0 || barRectHeight <= 0) {
         return
@@ -116,14 +116,14 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         }
       }
 
-      g2d.drawProgression(width = w)
+      g2d.drawProgression(width = width)
       if (isCustomImageEnabled()) {
         val loadingImage: BufferedImage = toBufferedImage(
           loadImageAndScale()
         )
 
         indeterminateOffset += velocity
-        if (indeterminateOffset >= w + loadingImage.width) {
+        if (indeterminateOffset >= width + loadingImage.width) {
           indeterminateOffset = -loadingImage.width
           velocity = current.cycleTime / current.repaintInterval
         }
@@ -221,9 +221,9 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         g2d.fill(r)
       }
 
-      val i = progressBar.insets
-      JBInsets.removeFrom(r, i)
-      val amountFull = getAmountFull(i, r.width, r.height)
+      val insets = progressBar.insets
+      JBInsets.removeFrom(r, insets)
+      val amountFull = getAmountFull(insets, r.width, r.height)
 
       val fullShape: Shape
       val coloredShape: Shape
@@ -239,9 +239,6 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
       }
       g2d.color = getDeterminateSecondaryColor()
       g2d.fill(fullShape)
-
-      // Use foreground color as a reference, don't use it directly. This is done for compatibility reason.
-      // Colors are hardcoded in UI delegates by design. If more colors are needed contact designers.
       g2d.color = getDeterminatePrimaryColor()
       g2d.fill(coloredShape)
 
@@ -254,7 +251,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
 
       // Paint text
       if (progressBar.isStringPainted) {
-        paintString(g, i.left, i.top, r.width, r.height, amountFull, i)
+        paintString(g, insets.left, insets.top, r.width, r.height, amountFull, insets)
       }
     } finally {
       g2d.dispose()
