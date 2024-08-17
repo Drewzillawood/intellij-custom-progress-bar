@@ -68,20 +68,23 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
 
         JBInsets.removeFrom(r, insets)
         val orientation = progressBar.orientation
-        var yOffset = r.y + (r.height - ph) / 2
-        var xOffset = r.x + (r.width - pw) / 2
+        val yOffset = r.y + (r.height - ph) / 2
+        val xOffset = r.x + (r.width - pw) / 2
 
-        val shape: Shape
+        val x = if (orientation == SwingConstants.HORIZONTAL) r.x.toFloat() else xOffset.toFloat()
+        val y = if (orientation == SwingConstants.HORIZONTAL) yOffset.toFloat() - SCALED_PROGRESSION_HEIGHT * 2 else r.y.toFloat()
+        val w = if (orientation == SwingConstants.HORIZONTAL) r.width.toFloat() else pw.toFloat()
+        val h = if (orientation == SwingConstants.HORIZONTAL) SCALED_PROGRESSION_RADIUS else r.height.toFloat()
+        val ar = if (orientation == SwingConstants.HORIZONTAL) SCALED_PROGRESSION_RADIUS else r.height.toFloat()
+
         val step = JBUIScale.scale(6)
-        if (orientation == SwingConstants.HORIZONTAL) {
-          shape = getShapedRect(r.x.toFloat(), yOffset.toFloat() - SCALED_PROGRESSION_HEIGHT * 2, r.width.toFloat(), SCALED_PROGRESSION_RADIUS, SCALED_PROGRESSION_RADIUS)
-          yOffset = r.y + ph / 2
-          g2d.paint = GradientPaint((r.x + animationIndex * step * 2).toFloat(), yOffset.toFloat(), getIndeterminatePrimaryColor(), (r.x + frameCount * step + animationIndex * step * 2).toFloat(), yOffset.toFloat(), getIndeterminateSecondaryColor(), true)
-        } else {
-          shape = getShapedRect(xOffset.toFloat(), r.y.toFloat(), pw.toFloat(), r.height.toFloat(), pw.toFloat())
-          xOffset = r.x + pw / 2
-          g2d.paint = GradientPaint(xOffset.toFloat(), (r.y + animationIndex * step * 2).toFloat(), getIndeterminatePrimaryColor(), xOffset.toFloat(), (r.y + frameCount * step + animationIndex * step * 2).toFloat(), getIndeterminateSecondaryColor(), true)
-        }
+        val x1 = if (orientation == SwingConstants.HORIZONTAL) (r.x + animationIndex * step * 2).toFloat() else (r.x + pw / 2).toFloat()
+        val y1 = if (orientation == SwingConstants.HORIZONTAL) (r.y + ph / 2).toFloat() else (r.y + animationIndex * step * 2).toFloat()
+        val x2 = if (orientation == SwingConstants.HORIZONTAL) (r.x + frameCount * step + animationIndex * step * 2).toFloat() else x1
+        val y2 = if (orientation == SwingConstants.HORIZONTAL) y1 else (r.y + frameCount * step + animationIndex * step * 2).toFloat()
+
+        val shape = getShapedRect(x, y, w, h, ar)
+        g2d.paint = GradientPaint(x1, y1, getIndeterminatePrimaryColor(), x2, y2, getIndeterminateSecondaryColor(), true)
         g2d.fill(shape)
 
         if (progressBar.isStringPainted) {
@@ -136,6 +139,70 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     }
   }
 
+  private fun shapeY(
+    r: Rectangle,
+    xOffset: Int,
+    pw: Int,
+    g2d: Graphics2D,
+    step: Int
+  ): Shape {
+    val x = xOffset.toFloat()
+    val y = r.y.toFloat()
+    val w = pw.toFloat()
+    val h = r.height.toFloat()
+    val ar = pw.toFloat()
+    val shape1 = getShapedRect(
+      x,
+      y,
+      w,
+      h,
+      ar
+    )
+    val x1 = (r.x + pw / 2).toFloat()
+    val y1 = (r.y + animationIndex * step * 2).toFloat()
+    val x2 = x1
+    val y2 = (r.y + frameCount * step + animationIndex * step * 2).toFloat()
+    g2d.paint = GradientPaint(
+      x1,
+      y1,
+      getIndeterminatePrimaryColor(),
+      x2,
+      y2,
+      getIndeterminateSecondaryColor(),
+      true
+    )
+    return shape1
+  }
+
+  private fun shapeX(
+    r: Rectangle,
+    yOffset: Int,
+    ph: Int,
+    g2d: Graphics2D,
+    step: Int
+  ): Shape {
+    val x = r.x.toFloat()
+    val y = yOffset.toFloat() - SCALED_PROGRESSION_HEIGHT * 2
+    val w = r.width.toFloat()
+    val h = SCALED_PROGRESSION_RADIUS
+    val ar = SCALED_PROGRESSION_RADIUS
+    val shape = getShapedRect(x, y, w, h, ar)
+    val x1 = (r.x + animationIndex * step * 2).toFloat()
+    val y1 = (r.y + ph / 2).toFloat()
+    val x2 = (r.x + frameCount * step + animationIndex * step * 2).toFloat()
+    val y2 = y1
+    g2d.paint = GradientPaint(
+      x1,
+      y1,
+      getIndeterminatePrimaryColor(),
+      x2,
+      y2,
+      getIndeterminateSecondaryColor(),
+      true
+    )
+    return shape
+  }
+
   private fun setupProgressBar(
     graphics: Graphics?,
     component: JComponent?,
@@ -160,6 +227,33 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
   private fun isProgressBarInvalid(): Boolean {
     return progressBar.width - (progressBar.insets.left + progressBar.insets.right) <= 0
       || progressBar.height - (progressBar.insets.top + progressBar.insets.bottom) <= 0
+  }
+
+  private fun drawProgression(
+    g2d: Graphics2D,
+    c: JComponent,
+    f: (c: JComponent, g2d: Graphics2D, Insets, r: Rectangle, pw: Int, ph: Int) -> Unit
+  ) {
+    val r = Rectangle(progressBar.size)
+    if (c.isOpaque) {
+      g2d.color = c.parent.background
+      g2d.fill(r)
+    }
+
+    JBInsets.removeFrom(r, progressBar.insets)
+    val orientation = progressBar.orientation
+    val ph = progressBar.preferredSize.height
+    val pw = progressBar.preferredSize.width
+    val yOffset = r.y + (r.height - ph) / 2
+    val xOffset = r.x + (r.width - pw) / 2
+
+    val step = JBUIScale.scale(6)
+    val shape = if (orientation == SwingConstants.HORIZONTAL) {
+      shapeX(r, yOffset, ph, g2d, step)
+    } else {
+      shapeY(r, xOffset, pw, g2d, step)
+    }
+    g2d.fill(shape)
   }
 
   private fun paintString(g: Graphics2D, x: Int, y: Int, w: Int, h: Int, fillStart: Int, amountFull: Int) {
