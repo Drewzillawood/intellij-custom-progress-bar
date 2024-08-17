@@ -1,3 +1,6 @@
+### 2024.2.0
+- You can now add custom images! (Currently only SVG support)
+
 ### 2.1.4
 - Refactoring and optimization of storage
 

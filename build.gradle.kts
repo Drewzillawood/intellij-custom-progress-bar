@@ -22,7 +22,7 @@ dependencies {
 }
 
 group = "com.drewzillawood.CustomProgressBar"
-version = "2.1.4"
+version = "2024.2.0"
 
 repositories {
     mavenCentral()
