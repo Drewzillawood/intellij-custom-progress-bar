@@ -365,8 +365,6 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     return bufferedImage
   }
 
-  private fun isEven(value: Int): Boolean = value % 2 == 0
-
   companion object {
     private const val MARGIN = 1f
     private const val HEIGHT = 5f
