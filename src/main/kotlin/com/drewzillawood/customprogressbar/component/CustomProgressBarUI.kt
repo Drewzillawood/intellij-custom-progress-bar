@@ -60,6 +60,11 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
   override fun paintIndeterminate(g: Graphics?, component: JComponent?) {
     drawProgressBar(g, component) { c, g2d ->
       try {
+        if (progressBar.orientation != SwingConstants.HORIZONTAL || !c.componentOrientation.isLeftToRight) {
+          super.paintDeterminate(g, component)
+          return@drawProgressBar
+        }
+
         drawProgression(g2d, c)
 
         if (isCustomImageEnabled()) {
@@ -80,11 +85,6 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
   ) {
     val g2d = graphics as? Graphics2D ?: return
     component ?: return
-
-    if (progressBar.orientation != SwingConstants.HORIZONTAL || !component.componentOrientation.isLeftToRight) {
-      super.paintDeterminate(graphics, component)
-      return
-    }
 
     if (isProgressBarInvalid()) return
 
@@ -154,9 +154,8 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
       }
     }
 
-    val shape = getShapedRect(x, y, w, h, ar)
     g2d.paint = GradientPaint(x1, y1, getIndeterminatePrimaryColor(), x2, y2, getIndeterminateSecondaryColor(), true)
-    g2d.fill(shape)
+    g2d.fill(getShapedRect(x, y, w, h, ar))
     g2d.fill(
       RoundRectangle2D.Float(
         0f * SCALED_MARGIN,
@@ -285,51 +284,46 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     return if (flatEnds) Rectangle2D.Float(x, y, w, h) else RoundRectangle2D.Float(x, y, w, h, ar, ar)
   }
 
-  override fun paintDeterminate(g: Graphics?, c: JComponent?) {
-    val g2d = g?.create() as Graphics2D
-    c ?: return
+  override fun paintDeterminate(g: Graphics?, component: JComponent?) {
+    drawProgressBar(g, component) { c, g2d ->
+      try {
+        val r = Rectangle(progressBar.size)
+        if (c.isOpaque && c.parent != null) {
+          g2d.color = c.parent.background
+          g2d.fill(r)
+        }
 
-    try {
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-      g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE)
-      val r = Rectangle(progressBar.size)
+        val insets = progressBar.insets
+        JBInsets.removeFrom(r, insets)
+        val amountFull = getAmountFull(insets, r.width, r.height)
 
-      if (c.isOpaque && c.parent != null) {
-        g2d.color = c.parent.background
-        g2d.fill(r)
+        val fullShape: Shape
+        val coloredShape: Shape
+        val orientation = progressBar.orientation
+        if (orientation == SwingConstants.HORIZONTAL) {
+          val yOffset = r.y + (r.height - progressBar.preferredSize.height) / 2 - 2
+          fullShape = getShapedRect(r.x.toFloat(), yOffset.toFloat() + SCALED_PROGRESSION_HEIGHT * 2, r.width.toFloat(), SCALED_PROGRESSION_RADIUS, SCALED_PROGRESSION_RADIUS)
+          coloredShape = getShapedRect(r.x.toFloat(), yOffset.toFloat() + SCALED_PROGRESSION_HEIGHT * 2, amountFull.toFloat(), SCALED_PROGRESSION_RADIUS, SCALED_PROGRESSION_RADIUS)
+        } else {
+          val xOffset = r.x + (r.width - progressBar.preferredSize.width) / 2 - 2
+          fullShape = getShapedRect(xOffset.toFloat(), r.y.toFloat(), progressBar.preferredSize.width.toFloat(), r.height.toFloat(), progressBar.preferredSize.width.toFloat())
+          coloredShape = getShapedRect(xOffset.toFloat(), r.y.toFloat(), progressBar.preferredSize.width.toFloat(), amountFull.toFloat(), progressBar.preferredSize.width.toFloat())
+        }
+        g2d.color = getDeterminateSecondaryColor()
+        g2d.fill(fullShape)
+        g2d.color = getDeterminatePrimaryColor()
+        g2d.fill(coloredShape)
+
+        if (isCustomImageEnabled()) {
+          drawCustomImage(g2d, c, false)
+        }
+
+        if (progressBar.isStringPainted) {
+          paintString(g, insets.left, insets.top, r.width, r.height, amountFull, insets)
+        }
+      } finally {
+        g2d.dispose()
       }
-
-      val insets = progressBar.insets
-      JBInsets.removeFrom(r, insets)
-      val amountFull = getAmountFull(insets, r.width, r.height)
-
-      val fullShape: Shape
-      val coloredShape: Shape
-      val orientation = progressBar.orientation
-      if (orientation == SwingConstants.HORIZONTAL) {
-        val yOffset = r.y + (r.height - progressBar.preferredSize.height) / 2 - 2
-        fullShape = getShapedRect(r.x.toFloat(), yOffset.toFloat() + SCALED_PROGRESSION_HEIGHT * 2, r.width.toFloat(), SCALED_PROGRESSION_RADIUS, SCALED_PROGRESSION_RADIUS)
-        coloredShape = getShapedRect(r.x.toFloat(), yOffset.toFloat() + SCALED_PROGRESSION_HEIGHT * 2, amountFull.toFloat(), SCALED_PROGRESSION_RADIUS, SCALED_PROGRESSION_RADIUS)
-      } else {
-        val xOffset = r.x + (r.width - progressBar.preferredSize.width) / 2 - 2
-        fullShape = getShapedRect(xOffset.toFloat(), r.y.toFloat(), progressBar.preferredSize.width.toFloat(), r.height.toFloat(), progressBar.preferredSize.width.toFloat())
-        coloredShape = getShapedRect(xOffset.toFloat(), r.y.toFloat(), progressBar.preferredSize.width.toFloat(), amountFull.toFloat(), progressBar.preferredSize.width.toFloat())
-      }
-      g2d.color = getDeterminateSecondaryColor()
-      g2d.fill(fullShape)
-      g2d.color = getDeterminatePrimaryColor()
-      g2d.fill(coloredShape)
-
-      if (isCustomImageEnabled()) {
-        drawCustomImage(g2d, c, false)
-      }
-
-      // Paint text
-      if (progressBar.isStringPainted) {
-        paintString(g, insets.left, insets.top, r.width, r.height, amountFull, insets)
-      }
-    } finally {
-      g2d.dispose()
     }
   }
 
