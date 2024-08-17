@@ -15,7 +15,6 @@ import java.awt.GradientPaint
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.Image
-import java.awt.Insets
 import java.awt.Rectangle
 import java.awt.RenderingHints
 import java.awt.Shape
@@ -59,45 +58,15 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
   }
 
   override fun paintIndeterminate(g: Graphics?, component: JComponent?) {
-    drawProgressBar(g, component) { c, g2d, insets, r ->
+    drawProgressBar(g, component) { c, g2d ->
       try {
         drawProgression(g2d, c)
 
-        if (progressBar.isStringPainted) {
-          if (progressBar.orientation == SwingConstants.HORIZONTAL) {
-            paintString(g2d, insets.left, insets.top, r.width, r.height, boxRect.x, boxRect.width)
-          } else {
-            paintString(g2d, insets.left, insets.top, r.width, r.height, boxRect.y, boxRect.height)
-          }
-        }
-
         if (isCustomImageEnabled()) {
-          val loadingImage: BufferedImage = toBufferedImage(loadImageAndScale())
-
-          indeterminateOffset += velocity
-          if (indeterminateOffset >= r.width + loadingImage.width) {
-            indeterminateOffset = -loadingImage.width
-            velocity = current.cycleTime / current.repaintInterval
-          }
-
-          val verticalMargin = (c.height - loadingImage.height) / 2f
-          val horizontalMargin = JBUIScale.scale(-20f)
-          val maxedOffset = min(
-            max(horizontalMargin, indeterminateOffset.toFloat() - loadingImage.width / 2f),
-            c.width - loadingImage.width - horizontalMargin
-          )
-
-          g2d.drawImage(
-            loadingImage,
-            affineTransform(
-              tx = maxedOffset,
-              ty = verticalMargin,
-              sx = 1f,
-              sy = 1f
-            ),
-            null
-          )
+          drawCustomImage(g2d, c, true)
         }
+
+        drawIndeterminateString(g2d)
       } finally {
         g2d.dispose()
       }
@@ -107,7 +76,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
   private fun drawProgressBar(
     graphics: Graphics?,
     component: JComponent?,
-    draw: (c: JComponent, g2d: Graphics2D, Insets, r: Rectangle) -> Unit
+    draw: (c: JComponent, g2d: Graphics2D) -> Unit
   ) {
     val g2d = graphics as? Graphics2D ?: return
     component ?: return
@@ -122,7 +91,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
     g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_NORMALIZE)
 
-    draw(component, g2d, progressBar.insets, Rectangle(progressBar.size))
+    draw(component, g2d)
   }
 
   private fun isProgressBarInvalid(): Boolean {
@@ -198,6 +167,54 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
         SCALED_PROGRESSION_RADIUS
       )
     )
+  }
+
+  private fun drawCustomImage(g2d: Graphics2D, c: JComponent, isIndeterminate: Boolean) {
+    val loadingImage: BufferedImage = toBufferedImage(loadImageAndScale())
+
+    val offset = if (isIndeterminate) {
+      incrementIndeterminateVelocity(loadingImage)
+    } else {
+      getAmountFull(progressBar.insets, progressBar.size.width, progressBar.size.height).toFloat()
+    }
+
+    val verticalMargin = (c.height - loadingImage.height) / 2f
+    val horizontalMargin = JBUIScale.scale(-20f)
+    val maxedOffset = min(
+      max(horizontalMargin, offset - loadingImage.width / 2f),
+      c.width - loadingImage.width - horizontalMargin
+    )
+
+    g2d.drawImage(
+      loadingImage,
+      affineTransform(
+        tx = maxedOffset,
+        ty = verticalMargin,
+        sx = 1f,
+        sy = 1f
+      ),
+      null
+    )
+  }
+
+  private fun incrementIndeterminateVelocity(loadingImage: BufferedImage): Float {
+    indeterminateOffset += velocity
+    if (indeterminateOffset >= progressBar.size.width + loadingImage.width) {
+      indeterminateOffset = -loadingImage.width
+      velocity = current.cycleTime / current.repaintInterval
+    }
+    return indeterminateOffset.toFloat()
+  }
+
+  private fun drawIndeterminateString(g2d: Graphics2D) {
+    val r = Rectangle(progressBar.size)
+    if (progressBar.isStringPainted) {
+      if (progressBar.orientation == SwingConstants.HORIZONTAL) {
+        paintString(g2d, progressBar.insets.left, progressBar.insets.top, r.width, r.height, boxRect.x, boxRect.width)
+      } else {
+        paintString(g2d, progressBar.insets.left, progressBar.insets.top, r.width, r.height, boxRect.y, boxRect.height)
+      }
+    }
   }
 
   private fun paintString(g: Graphics2D, x: Int, y: Int, w: Int, h: Int, fillStart: Int, amountFull: Int) {
@@ -304,24 +321,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
       g2d.fill(coloredShape)
 
       if (isCustomImageEnabled()) {
-        val loadingImage: BufferedImage = toBufferedImage(loadImageAndScale())
-        val verticalMargin = (c.height - loadingImage.height) / 2f
-        val horizontalMargin = JBUIScale.scale(-20f)
-        val maxedOffset = min(
-          max(horizontalMargin, amountFull.toFloat() - loadingImage.width / 2f),
-          c.width - loadingImage.width - horizontalMargin
-        )
-
-        g2d.drawImage(
-          loadingImage,
-          affineTransform(
-            tx = maxedOffset,
-            ty = verticalMargin,
-            sx = 1f,
-            sy = 1f
-          ),
-          null
-        )
+        drawCustomImage(g2d, c, false)
       }
 
       // Paint text
