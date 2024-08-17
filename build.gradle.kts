@@ -22,7 +22,7 @@ dependencies {
 }
 
 group = "com.drewzillawood.CustomProgressBar"
-version = "2024.2.0"
+version = "2024.2.1"
 
 repositories {
     mavenCentral()
@@ -35,7 +35,7 @@ repositories {
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellijPlatform {
     pluginConfiguration {
-        name = "custom-progress-bars"
+        name = "Custom Progress Bar"
         ideaVersion {
             untilBuild.set(provider { null })
         }

@@ -21,7 +21,7 @@
 
     <change-notes>
         <![CDATA[
-            <p>2024.2.0</p>
+            <p>2024.2.1</p>
             <ul>
                 <li>You can now add custom images! (Currently only SVG support)</li>
             </ul>

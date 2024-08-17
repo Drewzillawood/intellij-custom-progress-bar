@@ -1,4 +1,4 @@
-### 2024.2.0
+### 2024.2.1
 - You can now add custom images! (Currently only SVG support)
 
 ### 2.1.4
