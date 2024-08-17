@@ -59,7 +59,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
   }
 
   override fun paintIndeterminate(g: Graphics?, component: JComponent?) {
-    setupProgressBar(g, component) { c, g2d, insets, r ->
+    drawProgressBar(g, component) { c, g2d, insets, r ->
       try {
         drawProgression(g2d, c)
 
@@ -168,7 +168,7 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
     return shape
   }
 
-  private fun setupProgressBar(
+  private fun drawProgressBar(
     graphics: Graphics?,
     component: JComponent?,
     draw: (c: JComponent, g2d: Graphics2D, Insets, r: Rectangle) -> Unit
