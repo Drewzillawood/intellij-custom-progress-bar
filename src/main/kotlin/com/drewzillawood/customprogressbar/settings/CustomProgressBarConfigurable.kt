@@ -27,6 +27,8 @@ import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.bindValue
+import com.intellij.ui.dsl.builder.components.ValidationType
+import com.intellij.ui.dsl.builder.components.validationTooltip
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.toMutableProperty
 import com.intellij.ui.icons.EMPTY_ICON
@@ -210,6 +212,17 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
               }
             }
           }.visibleIf(customImageCheckBox.selected)
+          row {
+            validationTooltip(
+              "Please specify path to existing SVG",
+              null,
+              null,
+              ValidationType.WARNING,
+              false
+            ).component
+          }.visibleIf(locationProperty.transform {
+            !it.endsWith(".svg", ignoreCase = true)
+          })
         }
       }
     }

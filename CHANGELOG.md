@@ -1,3 +1,8 @@
+### 2024.2.2
+- Upgrade to jvm 21
+- Upgrade to kotlin 2.0
+- Validation tooltip for selecting SVG files only
+
 ### 2024.2.1
 - You can now add custom images! (Currently only SVG support)
 

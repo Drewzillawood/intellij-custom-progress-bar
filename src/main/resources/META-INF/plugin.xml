@@ -1,5 +1,5 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
-<idea-plugin require-restart="true">
+<idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
     <id>com.drewzillawood.CustomProgressBar</id>
 
@@ -21,6 +21,13 @@
 
     <change-notes>
         <![CDATA[
+            <p>2024.2.2</p>
+            <ul>
+                <li>Upgrade to jvm 21</li>
+                <li>Upgrade to kotlin 2.0</li>
+                <li>Validation tooltip for selecting SVG files only</li>
+            </ul>
+
             <p>2024.2.1</p>
             <ul>
                 <li>You can now add custom images! (Currently only SVG support)</li>
@@ -106,7 +113,7 @@
         <applicationConfigurable parentId="appearance"
                                  instance="com.drewzillawood.customprogressbar.settings.CustomProgressBarConfigurable"
                                  id="org.intellij.sdk.settings.AppSettingsConfigurable"
-                                 dynamic="false"
+                                 dynamic="true"
                                  displayName="Custom Progress Bar"/>
         <applicationService serviceImplementation="com.drewzillawood.customprogressbar.settings.CustomProgressBarSettings"/>
         <applicationService serviceImplementation="com.drewzillawood.customprogressbar.data.PersistentConfigsComponent"/>
