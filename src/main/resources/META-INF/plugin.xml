@@ -23,6 +23,7 @@
         <![CDATA[
             <p>2024.2.3</p>
             <ul>
+                <li>Support .jpg, .jpeg, .png for custom images</li>
                 <li>Correct versioning</li>
             </ul>
 

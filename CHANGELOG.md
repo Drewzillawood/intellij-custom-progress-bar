@@ -1,4 +1,5 @@
 ### 2024.2.3
+- Support .jpg, .jpeg, .png for custom images
 - Correct versioning
 
 ### 2024.2.2

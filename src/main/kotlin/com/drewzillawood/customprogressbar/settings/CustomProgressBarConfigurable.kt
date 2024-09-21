@@ -50,6 +50,7 @@ import java.awt.Image
 import java.io.File
 import java.nio.file.Paths
 import java.util.*
+import javax.imageio.ImageIO
 import javax.swing.JCheckBox
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -106,7 +107,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
       current.imagePath = locationProperty.get()
       if (current.imagePath != null) {
         previewPanel.remove(0)
-        previewPanel.add(JBLabel(JBImageIcon(getSvgIcon())))
+        previewPanel.add(JBLabel(JBImageIcon(getImageIcon())))
       }
     }
 
@@ -184,7 +185,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
             }
           }
           row {
-            previewPanel = IconPreviewPanel(JBLabel(JBImageIcon(getSvgIcon())))
+            previewPanel = IconPreviewPanel(JBLabel(JBImageIcon(getImageIcon())))
             cell(previewPanel)
             panel {
               row {
@@ -200,8 +201,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                     if (it.isVisible) {
                       val path = Paths.get(it.text)
                       when {
-                        it.text.isEmpty() -> error("Specify path to SVG")
-                        !path.exists() -> error("SVG file does not exist")
+                        it.text.isEmpty() -> error("Specify path to compatible image format: (JPG, JPEG, PNG, SVG)")
+                        !path.exists() -> error("Image file does not exist")
                         path.isDirectory() -> error("Path can't be a directory")
                         else -> null
                       }
@@ -214,14 +215,14 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
           }.visibleIf(customImageCheckBox.selected)
           row {
             validationTooltip(
-              "Please specify path to existing SVG",
+              "Please specify path to a compatible image format: (JPG, JPEG, PNG, SVG)",
               null,
               null,
               ValidationType.WARNING,
               false
             ).component
-          }.visibleIf(locationProperty.transform {
-            !it.endsWith(".svg", ignoreCase = true)
+          }.visibleIf(locationProperty.transform { path ->
+            listOf(".jpg", "jpeg", ".png", ".svg").none { path.endsWith(it) }
           })
         }
       }
@@ -232,14 +233,24 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
     return panel
   }
 
-  private fun getSvgIcon(): Image = (
-    current.imagePath
-      ?.let {
-        ImageLoader.loadFromUrl(File(it).toURI().toURL())
-      } ?: EMPTY_ICON.image
-    )
-    ?.getScaledInstance(40, 40, Image.SCALE_SMOOTH)
-    ?: EMPTY_ICON.image
+  private fun getImageIcon(): Image {
+    val imagePath = current.imagePath
+
+    if (imagePath != null) {
+      val file = File(imagePath)
+      val fileExtension = file.extension.lowercase()
+
+      val image = when (fileExtension) {
+        "svg" -> ImageLoader.loadFromUrl(file.toURI().toURL())
+        "jpg", "jpeg", "png" -> ImageIO.read(file)
+        else -> EMPTY_ICON.image
+      }
+
+      return image?.getScaledInstance(40, 40, Image.SCALE_SMOOTH) ?: EMPTY_ICON.image
+    }
+
+    return EMPTY_ICON.image
+  }
 
   private fun simulateProgress() {
     val totalTime = 2000L
