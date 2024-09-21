@@ -1,3 +1,7 @@
+### 2024.3.1
+- 2024.3.1 Compatibility
+- Updating deprecated methods
+
 ### 2024.2.3
 - Support .jpg, .jpeg, .png for custom images
 - Correct versioning

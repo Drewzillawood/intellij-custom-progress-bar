@@ -189,9 +189,9 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
             cell(previewPanel)
             panel {
               row {
-                inputFileTextFieldWithBrowseButton = textFieldWithBrowseButton("Browse Custom Image",
-                  null,
+                inputFileTextFieldWithBrowseButton = textFieldWithBrowseButton(
                   FileChooserDescriptorFactory.createSingleFileDescriptor()
+                    .withTitle("Browse Custom Image")
                     .withFileFilter { it.isFile }
                     .withPathToTextConvertor(::getPresentablePath)
                     .withTextToPathConvertor(::getCanonicalPath))

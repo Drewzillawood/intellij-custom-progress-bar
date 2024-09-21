@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("java")
@@ -24,7 +26,7 @@ dependencies {
 }
 
 group = "com.drewzillawood.CustomProgressBar"
-version = "2024.2.3"
+version = "2024.3.1"
 
 repositories {
     mavenCentral()
@@ -39,7 +41,7 @@ intellijPlatform {
     pluginConfiguration {
         name = "Custom Progress Bar"
         ideaVersion {
-            sinceBuild = "241"
+            sinceBuild = "243"
             untilBuild.set(provider { null })
         }
     }
@@ -59,11 +61,11 @@ kotlin {
     jvmToolchain(JavaVersion.VERSION_21.toString().toInt())
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_21)
-        apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
-        languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+        apiVersion.set(KotlinVersion.KOTLIN_2_0)
+        languageVersion.set(KotlinVersion.KOTLIN_2_0)
     }
 }
 

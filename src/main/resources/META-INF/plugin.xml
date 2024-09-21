@@ -21,6 +21,12 @@
 
     <change-notes>
         <![CDATA[
+            <p>2024.3.1</p>
+            <ul>
+                <li>2024.3.1 Compatibility</li>
+                <li>Updating deprecated methods</li>
+            </ul>
+
             <p>2024.2.3</p>
             <ul>
                 <li>Support .jpg, .jpeg, .png for custom images</li>
