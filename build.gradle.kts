@@ -24,7 +24,7 @@ dependencies {
 }
 
 group = "com.drewzillawood.CustomProgressBar"
-version = "2024.2.2"
+version = "2024.2.3"
 
 repositories {
     mavenCentral()
@@ -39,6 +39,7 @@ intellijPlatform {
     pluginConfiguration {
         name = "Custom Progress Bar"
         ideaVersion {
+            sinceBuild = "241"
             untilBuild.set(provider { null })
         }
     }

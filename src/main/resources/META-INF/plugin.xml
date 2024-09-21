@@ -21,6 +21,11 @@
 
     <change-notes>
         <![CDATA[
+            <p>2024.2.3</p>
+            <ul>
+                <li>Correct versioning</li>
+            </ul>
+
             <p>2024.2.2</p>
             <ul>
                 <li>Upgrade to jvm 21</li>

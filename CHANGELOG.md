@@ -1,3 +1,6 @@
+### 2024.2.3
+- Correct versioning
+
 ### 2024.2.2
 - Upgrade to jvm 21
 - Upgrade to kotlin 2.0
