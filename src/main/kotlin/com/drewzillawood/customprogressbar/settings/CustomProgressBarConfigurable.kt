@@ -87,9 +87,12 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   private lateinit var previewPanel: IconPreviewPanel
   private lateinit var customImageCheckBox: JCheckBox
 
+  private lateinit var imageValidationTooltip: JComponent
+
   private val propertyGraph: PropertyGraph = PropertyGraph()
-  private val locationProperty: GraphProperty<String> = propertyGraph.lazyProperty { current.imagePath ?: Strings.EMPTY }
-    .bindStorage("imagePath")
+  private val locationProperty: GraphProperty<String> =
+    propertyGraph.lazyProperty { current.imagePath ?: Strings.EMPTY }
+      .bindStorage("imagePath")
 
   init {
     indeterminateExampleProgressBar.setUI(CustomProgressBarDemoUI())
@@ -105,9 +108,9 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
   override fun createComponent(): JComponent {
     locationProperty.afterChange {
       current.imagePath = locationProperty.get()
-      if (current.imagePath != null) {
-        previewPanel.remove(0)
-        previewPanel.add(JBLabel(JBImageIcon(getImageIcon())))
+      previewPanel.removeAll()
+      getImageIcon().takeIf { EMPTY_ICON.image != it }?.let {
+        previewPanel.add(JBLabel(JBImageIcon(it)))
       }
     }
 
@@ -182,6 +185,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
               .component
             customImageCheckBox.addActionListener {
               current.isCustomImageEnabled = customImageCheckBox.isSelected
+              current.imagePath = Strings.EMPTY
+              locationProperty.set(Strings.EMPTY)
             }
           }
           row {
@@ -206,15 +211,14 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
                         path.isDirectory() -> error("Path can't be a directory")
                         else -> null
                       }
-                    }
-                    else null
+                    } else null
                   }.component
                 cell(inputFileTextFieldWithBrowseButton)
               }
             }
           }.visibleIf(customImageCheckBox.selected)
           row {
-            validationTooltip(
+            imageValidationTooltip = validationTooltip(
               "Please specify path to a compatible image format: (JPG, JPEG, PNG, SVG)",
               null,
               null,
@@ -222,7 +226,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
               false
             ).component
           }.visibleIf(locationProperty.transform { path ->
-            listOf(".jpg", "jpeg", ".png", ".svg").none { path.endsWith(it) }
+            customImageCheckBox.isSelected && listOf(".jpg", "jpeg", ".png", ".svg").none { path.endsWith(it) }
           })
         }
       }
@@ -238,15 +242,11 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
     if (imagePath != null) {
       val file = File(imagePath)
-      val fileExtension = file.extension.lowercase()
-
-      val image = when (fileExtension) {
+      return when (file.extension.lowercase()) {
         "svg" -> ImageLoader.loadFromUrl(file.toURI().toURL())
         "jpg", "jpeg", "png" -> ImageIO.read(file)
         else -> EMPTY_ICON.image
-      }
-
-      return image?.getScaledInstance(40, 40, Image.SCALE_SMOOTH) ?: EMPTY_ICON.image
+      }?.getScaledInstance(40, 40, Image.SCALE_SMOOTH) ?: EMPTY_ICON.image
     }
 
     return EMPTY_ICON.image
@@ -302,7 +302,7 @@ fun Row.colorPanel(property: KMutableProperty0<Int>): Cell<ColorPanel> {
   return cell(ColorPanel()).bindColor(property)
 }
 
-fun <T: ColorPanel> Cell<T>.bindColor(property: KMutableProperty0<Int>): Cell<T> {
+fun <T : ColorPanel> Cell<T>.bindColor(property: KMutableProperty0<Int>): Cell<T> {
   val colorChooser = this.component as ColorPanel
   colorChooser.addActionListener {
     property.set(colorChooser.selectedColor!!.rgb)
@@ -314,7 +314,7 @@ fun <T: ColorPanel> Cell<T>.bindColor(property: KMutableProperty0<Int>): Cell<T>
   )
 }
 
-private class IconPreviewPanel(component: JComponent): JPanel(BorderLayout()) {
+private class IconPreviewPanel(component: JComponent) : JPanel(BorderLayout()) {
   val radius = 4
   val size = 50
 

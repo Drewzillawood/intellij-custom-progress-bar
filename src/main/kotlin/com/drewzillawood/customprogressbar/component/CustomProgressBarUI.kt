@@ -169,7 +169,9 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
   }
 
   private fun drawCustomImage(g2d: Graphics2D, c: JComponent, isIndeterminate: Boolean) {
-    val loadingImage: BufferedImage = toBufferedImage(loadImageAndScale())
+    val img = loadImageAndScale()
+    if (EMPTY_ICON.image == img) return
+    val loadingImage: BufferedImage = toBufferedImage(img)
 
     val offset = if (isIndeterminate) {
       incrementIndeterminateVelocity(loadingImage)
@@ -332,13 +334,9 @@ open class CustomProgressBarUI : DarculaProgressBarUI() {
   }
 
   open fun loadImageAndScale(): Image = (
-    current.imagePath
-      ?.let {
-        ImageLoader.loadFromUrl(File(it).toURI().toURL())
-      } ?: EMPTY_ICON.image
-    )
-    ?.getScaledInstance(16, 16, Image.SCALE_SMOOTH)
-    ?: EMPTY_ICON.image
+    current.imagePath?.takeIf { it.isNotEmpty() }
+      ?.let { ImageLoader.loadFromUrl(File(it).toURI().toURL())
+        ?.getScaledInstance(16, 16, Image.SCALE_SMOOTH) } ?: EMPTY_ICON.image)
 
   open fun getDeterminatePrimaryColor(): Color {
     return Color(current.myDeterminatePrimaryColor)

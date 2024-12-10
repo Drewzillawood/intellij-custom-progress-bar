@@ -30,13 +30,9 @@ open class CustomProgressBarDemoUI : CustomProgressBarUI() {
   }
 
   override fun loadImageAndScale(): Image = (
-    currentDemo.imagePath
-      ?.let {
-        ImageLoader.loadFromUrl(File(it).toURI().toURL())
-      } ?: EMPTY_ICON.image
-    )
-    ?.getScaledInstance(16, 16, Image.SCALE_SMOOTH)
-    ?: EMPTY_ICON.image
+    currentDemo.imagePath?.takeIf { it.isNotEmpty() }
+      ?.let { ImageLoader.loadFromUrl(File(it).toURI().toURL())
+        ?.getScaledInstance(16, 16, Image.SCALE_SMOOTH) } ?: EMPTY_ICON.image)
 
   override fun getIndeterminateSecondaryColor(): Color {
     return Color(currentDemo.myIndeterminateSecondaryColor)

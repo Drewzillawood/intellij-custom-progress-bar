@@ -1,3 +1,7 @@
+### 2024.3.1-1
+- Updates to validation for custom image
+- Preventing black square for invalid image paths
+
 ### 2024.3.1
 - 2024.3.1 Compatibility
 - Updating deprecated methods

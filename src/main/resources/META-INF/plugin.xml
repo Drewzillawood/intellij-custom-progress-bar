@@ -21,6 +21,12 @@
 
     <change-notes>
         <![CDATA[
+            <p>2024.3.1-1</p>
+            <ul>
+                <li>Updates to validation for custom image</li>
+                <li>Preventing black square for invalid image paths</li>
+            </ul>
+
             <p>2024.3.1</p>
             <ul>
                 <li>2024.3.1 Compatibility</li>
