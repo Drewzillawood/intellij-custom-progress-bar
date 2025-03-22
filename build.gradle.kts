@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("java")
-    kotlin("jvm") version "2.0.0"
-    id("org.jetbrains.intellij.platform") version "2.0.1"
+    kotlin("jvm") version "2.0.21"
+    id("org.jetbrains.intellij.platform") version "2.3.0"
     kotlin("plugin.serialization") version "1.9.20"
 }
 
@@ -18,7 +18,6 @@ dependencies {
 
         pluginVerifier()
         zipSigner()
-        instrumentationTools()
     }
 
     implementation(kotlin("stdlib"))
@@ -26,7 +25,7 @@ dependencies {
 }
 
 group = "com.drewzillawood.CustomProgressBar"
-version = "2024.3.1-1"
+version = "2024.3.1-2"
 
 repositories {
     mavenCentral()

@@ -21,6 +21,11 @@
 
     <change-notes>
         <![CDATA[
+            <p>2024.3.1-2</p>
+            <ul>
+                <li>Removing deprecated usages</li>
+            </ul>
+
             <p>2024.3.1-1</p>
             <ul>
                 <li>Updates to validation for custom image</li>

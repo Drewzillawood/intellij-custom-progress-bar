@@ -41,7 +41,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import org.apache.logging.log4j.util.Strings
 import java.awt.BorderLayout
 import java.awt.Color
 import java.awt.Dimension
@@ -59,6 +58,8 @@ import javax.swing.JSlider
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.reflect.KMutableProperty0
+
+const val EMPTY_STRING = ""
 
 class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
@@ -91,7 +92,7 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
 
   private val propertyGraph: PropertyGraph = PropertyGraph()
   private val locationProperty: GraphProperty<String> =
-    propertyGraph.lazyProperty { current.imagePath ?: Strings.EMPTY }
+    propertyGraph.lazyProperty { current.imagePath ?: EMPTY_STRING }
       .bindStorage("imagePath")
 
   init {
@@ -185,8 +186,8 @@ class CustomProgressBarConfigurable : SearchableConfigurable, CoroutineScope {
               .component
             customImageCheckBox.addActionListener {
               current.isCustomImageEnabled = customImageCheckBox.isSelected
-              current.imagePath = Strings.EMPTY
-              locationProperty.set(Strings.EMPTY)
+              current.imagePath = EMPTY_STRING
+              locationProperty.set(EMPTY_STRING)
             }
           }
           row {
